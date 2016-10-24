@@ -5,7 +5,6 @@
 //#include <QFileSystemModel>
 #include <qstandarditemmodel.h>
 
-#include "mibnode.h"
 #include "mibitem.h"
 
 //class TreeMibModel : public QFileSystemModel

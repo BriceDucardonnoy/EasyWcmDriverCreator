@@ -15,12 +15,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     treemibmodel.cpp \
-    mibnode.cpp \
     mibitem.cpp
 
 HEADERS  += mainwindow.h \
     treemibmodel.h \
-    mibnode.h \
     mibitem.h
 
 FORMS    += mainwindow.ui

@@ -97,110 +97,14 @@ bool TreeMibModel::createModel(QFile *mibfile)
 {
     QTextStream in(mibfile);// <=> QTextStream in = new QTextStream(&mibfile);
 
-//    TreeMibModel *root = new TreeMibModel();
-//    root->setColumnCount(2);
-//    root->setRowCount(5);
-
-//    this->setName("enterprises");
-//    this->setObjectName("enterprises");
-//    this->setOid(".1.3.6.1.4.1");
     MibItem *root = new MibItem();
     this->setHorizontalHeaderItem(0, new QStandardItem("Name"));
     this->setHorizontalHeaderItem(1, new QStandardItem("OID"));
-//    this->appendRow(prepareRow(2, getName(), getOid()));
 
     appendRow(root->getItems());
-//    this->setItem(0, 0, new QStandardItem(getName()));
-//    this->setItem(0, 1, new QStandardItem(getOid()));
-
-//    this->invisibleRootItem();
-
-//    MibNode *root = new MibNode();
-//    root->setName("enterprises");
-//    root->setOid(".1.3.6.1.4.1");
-//    findNode(&in, this);
-//    createModel(&in, this);
     createModel(&in, root);
 
     return true;
-}
-
-void TreeMibModel::findNode(QTextStream *stream, TreeMibModel *parent)
-{
-//    TreeMibModel *node = new TreeMibModel(parent);
-    MibNode *node = new MibNode();
-    bool nodeFound = false;
-
-    while(!stream->atEnd())
-    {
-        QString line = stream->readLine();
-        // Node not found, looking for a start
-        if(!nodeFound && line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// Start of an object declaration
-        {
-            node->setName(line.split(" ", QString::SkipEmptyParts)[0]);
-            qInfo() << "Node named found " << node->getName();
-            nodeFound = true;
-
-        }
-        // Node found, looking for a end
-        else if(nodeFound && line.contains("::="))
-        {
-            if(line.contains(parent->getName()))
-            {
-                QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - 1).trimmed().split(" ");
-                node->setOid(parent->getOid() + "." + lineData[1]);
-                qInfo() << "Parent is " << lineData[0];
-                qInfo() << "Node is " << node->toString();
-//                node->setObjectName(node->getName());
-                parent->parent(*node);
-                qInfo() << "Node " << node->toString() << " with parent " << parent->toString();
-                return;// FIXME BDY: remove this line
-            }
-            nodeFound = false;
-        }
-
-    }
-}
-
-void TreeMibModel::createModel(QTextStream *stream, TreeMibModel *parent)
-{
-    TreeMibModel *node = new TreeMibModel(parent);
-    bool nodeFound = false;
-
-    while(!stream->atEnd())
-    {
-        QString line = stream->readLine();
-        // Node not found, looking for a start
-        if(!nodeFound && line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// Start of an object declaration
-        {
-            node->setName(line.split(" ", QString::SkipEmptyParts)[0]);
-            qInfo() << "Node named found " << node->getName();
-            nodeFound = true;
-
-        }
-        // Node found, looking for a end
-        else if(nodeFound && line.contains("::="))
-        {
-            if(line.contains(parent->getName()))
-            {
-                QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - 1).trimmed().split(" ");
-                node->setOid(parent->getOid() + "." + lineData[1]);
-                qInfo() << "Parent is " << lineData[0];
-                qInfo() << "Node is " << node->toString();
-                node->setObjectName(node->getName());
-
-//                parent->appendRow(prepareRow(2, node->getName(), node->getOid()));
-//                parent->item(0)->setChild(parent->rowCount() - 1, parent->item(1));
-
-                parent->item(0)->setChild(parent->rowCount() - 1, new QStandardItem(node->getName()));
-                parent->item(0)->setChild(parent->rowCount() - 1, 1, new QStandardItem(node->getOid()));
-                qInfo() << "Node " << node->toString() << " with parent " << parent->toString();
-                return;// FIXME BDY: remove this line
-            }
-            nodeFound = false;
-        }
-
-    }
 }
 
 void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
