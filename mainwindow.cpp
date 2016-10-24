@@ -13,6 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //    connect(ui->action_Charger_une_MIB,SIGNAL(triggered(bool)),this,SLOT(on_action_Charger_une_MIB_triggered()));
     ui->centralWidget->addActions(ui->menu_Menu->actions());
+
+    // TODO BDY: remove the following code
+    TreeMibModel *tmm = new TreeMibModel("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
+    ui->mibTreeView->setModel(tmm);
+    ui->mibTreeView->setColumnWidth(0, 300);
+    ui->mibTreeView->expandAll();
 }
 
 MainWindow::~MainWindow()

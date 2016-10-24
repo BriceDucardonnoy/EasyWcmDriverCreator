@@ -109,8 +109,8 @@ bool TreeMibModel::createModel(QFile *mibfile)
 
 void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
     static bool identityFound = false;
-    MibItem *child = new MibItem();
     bool nodeFound = false;
+    MibItem *child;
 
     while(!stream->atEnd())
     {
@@ -125,8 +125,10 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
         else if(!nodeFound &&
                 (line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive) || line.contains("OBJECT-TYPE", Qt::CaseInsensitive)))// Start of an object declaration
         {
+            child = new MibItem();
             child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
-            qInfo() << "Node named found " << child->getName();
+//            if(child->getName().compare("eventTxAl3dBParams") == 0) return;// TODO BDY: remove this line
+//            qInfo() << "Node named found " << child->getName();
             nodeFound = true;
 
         }
@@ -155,11 +157,15 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
                     moduleIdentity->createOrUpdateItems();
                     child->addChild(moduleIdentity);
                     child->createOrUpdateItems();
+                    qint64 pos = stream->pos();
                     createModel(stream, moduleIdentity);
+                    stream->seek(pos);
                 }
                 else
                 {
-                    createModel(stream, child);
+                    qint64 pos = stream->pos();
+                    createModel(stream, child);// Stream is at end because of reference given
+                    stream->seek(pos);
                 }
             }
             nodeFound = false;

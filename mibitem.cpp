@@ -41,13 +41,15 @@ const QList<QStandardItem *> MibItem::getItems() {
 
 void MibItem::addChild(MibItem *child)
 {
-    int idx = rowItems.at(0)->rowCount();
+    int id = 0;//rowItems.size();
+    int idx = rowItems.at(id)->rowCount();
     child->createOrUpdateItems();
-//    qInfo() << "Add children" << child->toString() << "to parent" << toString();
-    for(int i = 0 ; i < rowItems.size() ; i++)
-    {
-        rowItems.at(0)->setChild(idx, i, child->getItems().at(i));
-    }
+    qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << idx << "at address" << child;
+    rowItems.at(id)->appendRow(child->getItems());
+//    for(int i = 0 ; i < /*rowItems.size()*/rowItems.at(id)->columnCount() ; i++)
+//    {
+//        rowItems.at(id)->setChild(idx, i, child->getItems().at(i));
+//    }
 
     isLeaf = false;
 }
