@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="leaf">icons/leaf.png</file>
+        <file alias="folder_open">icons/folder_open.png</file>
+        <file alias="folder_closed">icons/folder_closed.png</file>
+    </qresource>
+</RCC>
