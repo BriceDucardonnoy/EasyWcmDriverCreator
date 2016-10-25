@@ -43,8 +43,9 @@ bool TreeMibModel::createModel(QFile *mibfile)
     QTextStream in(mibfile);// <=> QTextStream in = new QTextStream(&mibfile);
 
     MibItem *root = new MibItem();
-    this->setHorizontalHeaderItem(0, new QStandardItem("Name"));
-    this->setHorizontalHeaderItem(1, new QStandardItem("OID"));
+    this->setHorizontalHeaderItem(0, new QStandardItem(tr("Name")));
+    this->setHorizontalHeaderItem(1, new QStandardItem(tr("OID")));
+    this->setHorizontalHeaderItem(2, new QStandardItem(tr("Description")));
 
     appendRow(root->getItems());
     createModel(&in, root);
@@ -60,11 +61,19 @@ bool TreeMibModel::createModel(QFile *mibfile)
 void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
     static bool identityFound = false;
     bool nodeFound = false;
+    bool endNodeReached = false;
     MibItem *child;
+    QString line;
 
     while(!stream->atEnd())
     {
-        QString line = stream->readLine();
+        if(endNodeReached)
+        {
+            endNodeReached = false;
+        }
+        else {
+            line = stream->readLine();
+        }
         // Node not found, looking for a start
         if(line.contains("MODULE-IDENTITY", Qt::CaseInsensitive) && !line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// We skip the IMPORTS line
         {
@@ -180,7 +189,31 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
         }
         else if(nodeFound && line.contains("DESCRIPTION", Qt::CaseInsensitive))
         {
-
+            // Get all lines until the ::=
+            // Too slow
+//            qint64 pos = stream->pos();
+//            line += getDescriptionString(stream);
+//            stream->seek(pos);
+//            // Update description now
+//            child->setDescription(line.remove("DESCRIPTION").remove("\"").remove("No description").trimmed());
+            QString descr = "";
+            while(!stream->atEnd() && !(line = stream->readLine()).contains("::="))
+            {
+                descr += line;
+            }
+            child->setDescription(descr.remove("DESCRIPTION").remove("\"").remove("No description").trimmed());
+            endNodeReached = true;
         }
     }
+}
+
+QString TreeMibModel::getDescriptionString(QTextStream *stream)
+{
+    QString descr, line;
+
+    while(!stream->atEnd() && !(line = stream->readLine()).contains("::="))
+    {
+        descr += line;
+    }
+    return descr;
 }

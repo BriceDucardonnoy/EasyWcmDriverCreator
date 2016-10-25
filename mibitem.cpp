@@ -17,6 +17,7 @@ MibItem::MibItem(QString name, QString oid)
     this->oid = oid;
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
+    rowItems << new QStandardItem(description);
 
     foreach (QStandardItem* item, rowItems) {
         item->setEditable(false);
@@ -27,6 +28,7 @@ const QList<QStandardItem *> MibItem::createOrUpdateItems()
 {
     rowItems.at(0)->setText(name);
     rowItems.at(1)->setText(oid);
+    rowItems.at(2)->setText(description);
     // Really much faster to declare icons each time here rather than in constructor
 //    QIcon iconLeaf(":/icons/leaf");
 //    QIcon iconFolder(":/icons/folder_closed");
@@ -98,10 +100,9 @@ const QList<QStandardItem *> MibItem::getItems() {
 void MibItem::addChild(MibItem *child)
 {
     int id = 0;//rowItems.size();
-    int idx = rowItems.at(id)->rowCount();
     isLeaf = false;
     child->createOrUpdateItems();
-    qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << idx << "at address" << child;
+    qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << rowItems.at(id)->rowCount() << "at address" << child;
     rowItems.at(id)->appendRow(child->getItems());
 //    for(int i = 0 ; i < /*rowItems.size()*/rowItems.at(id)->columnCount() ; i++)
 //    {

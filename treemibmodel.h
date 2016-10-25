@@ -21,6 +21,7 @@ public:
 
 protected:
     void createModel(QTextStream *stream, const MibItem *parent);
+    QString getDescriptionString(QTextStream *stream);
 
 private:
     MibItem *moduleIdentity;
