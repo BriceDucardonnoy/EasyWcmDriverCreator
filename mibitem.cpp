@@ -11,7 +11,7 @@ MibItem::~MibItem()
 }
 
 MibItem::MibItem(QString name, QString oid)
-    : isLeaf(true), isReadOnly(true)
+    : isLeaf(true), isReadOnly(true), min(0), max(0)
 {
     this->name = name;
     this->oid = oid;
@@ -27,12 +27,68 @@ const QList<QStandardItem *> MibItem::createOrUpdateItems()
 {
     rowItems.at(0)->setText(name);
     rowItems.at(1)->setText(oid);
-    QIcon iconLeaf(":/icons/leaf");
-    QIcon iconFolder(":/icons/folder_closed");
-    iconFolder.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
-
-    rowItems.at(0)->setIcon(isLeaf ? iconLeaf : iconFolder);
+    // Really much faster to declare icons each time here rather than in constructor
+//    QIcon iconLeaf(":/icons/leaf");
+//    QIcon iconFolder(":/icons/folder_closed");
+//    iconFolder.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
+//    rowItems.at(0)->setIcon(isLeaf ? iconLeaf : iconFolder);
+    QIcon icon;
+    if(isLeaf)
+    {
+        if(isCurrent)
+        {
+            switch(this->type)
+            {
+            case Trap:
+                icon.addFile(":/icons/trap");
+                break;
+            case Gauge:
+                icon.addFile(":/icons/gauge");
+                break;
+            case U32:
+            case S32:
+            case EnumInt:
+                icon.addFile(":/icons/enum");
+                break;
+            case OctetString:
+                icon.addFile(":/icons/text");
+                break;
+            default:
+                icon.addFile(":/icons/leaf");
+            }
+        }
+        else
+        {
+            icon.addFile(":/icons/obsolete");
+        }
+    }
+    else
+    {
+        icon.addFile(":/icons/folder_closed");
+        icon.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
+    }
+    rowItems.at(0)->setIcon(icon);
     return getItems();
+}
+
+MibItem::AsnBasicType MibItem::getAsnBasicType() const
+{
+    return type;
+}
+
+void MibItem::setAsnBasicType(const AsnBasicType &value)
+{
+    type = value;
+}
+
+bool MibItem::getIsCurrent() const
+{
+    return isCurrent;
+}
+
+void MibItem::setIsCurrent(bool value)
+{
+    isCurrent = value;
 }
 
 const QList<QStandardItem *> MibItem::getItems() {
@@ -43,6 +99,7 @@ void MibItem::addChild(MibItem *child)
 {
     int id = 0;//rowItems.size();
     int idx = rowItems.at(id)->rowCount();
+    isLeaf = false;
     child->createOrUpdateItems();
     qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << idx << "at address" << child;
     rowItems.at(id)->appendRow(child->getItems());
@@ -51,12 +108,15 @@ void MibItem::addChild(MibItem *child)
 //        rowItems.at(id)->setChild(idx, i, child->getItems().at(i));
 //    }
 
-    isLeaf = false;
 }
 
 QString MibItem::toString() const
 {
-    return getOid() + " -> " + getName();
+    return getOid() + "->" + getName()
+            + (isLeaf ?
+                ("[" + QString::number(getMin()) + "," + QString::number(getMax())
+                + "] read-only: " + QString::number(getIsReadOnly()) + " current: " + QString::number(getIsCurrent()) + " ASN type: " + QString::number(getAsnBasicType()))
+            : "");
 }
 
 QString MibItem::getName() const
@@ -89,16 +149,6 @@ void MibItem::setOid(const QString &value)
     oid = value;
 }
 
-QString MibItem::getType() const
-{
-    return type;
-}
-
-void MibItem::setType(const QString &value)
-{
-    type = value;
-}
-
 bool MibItem::getIsReadOnly() const
 {
     return isReadOnly;
@@ -109,24 +159,24 @@ void MibItem::setIsReadOnly(bool value)
     isReadOnly = value;
 }
 
-QString MibItem::getKind() const
+int MibItem::getMin() const
 {
-    return kind;
+    return min;
 }
 
-void MibItem::setKind(const QString &value)
+void MibItem::setMin(int value)
 {
-    kind = value;
+    min = value;
 }
 
-int MibItem::getSize() const
+int MibItem::getMax() const
 {
-    return size;
+    return max;
 }
 
-void MibItem::setSize(int value)
+void MibItem::setMax(int value)
 {
-    size = value;
+    max = value;
 }
 
 QString MibItem::getDescription() const

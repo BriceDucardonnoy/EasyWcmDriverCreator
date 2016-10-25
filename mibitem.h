@@ -19,17 +19,14 @@ public:
     QString getOid() const;
     void setOid(const QString &value);
 
-    QString getType() const;
-    void setType(const QString &value);
-
     bool getIsReadOnly() const;
     void setIsReadOnly(bool value);
 
-    QString getKind() const;
-    void setKind(const QString &value);
+    int getMin() const;
+    void setMin(int value);
 
-    int getSize() const;
-    void setSize(int value);
+    int getMax() const;
+    void setMax(int value);
 
     QString getDescription() const;
     void setDescription(const QString &value);
@@ -39,16 +36,27 @@ public:
 
     const QList<QStandardItem *> getItems();
     const QList<QStandardItem *> createOrUpdateItems();
+
+    enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString};
+//    Q_ENUM(Type)
+
+    AsnBasicType getAsnBasicType() const;
+    void setAsnBasicType(const AsnBasicType &value);
+
+    bool getIsCurrent() const;
+    void setIsCurrent(bool value);
+
 protected:
 
 private:
     QString name;
     bool isLeaf;
     QString oid;
-    QString type;
+    AsnBasicType type;
     bool isReadOnly;
-    QString kind;
-    int size;
+    bool isCurrent;// Or obsolete in the other case
+    int min;
+    int max;// FIXME BDY: can be s32, or u32
     QString description;
     QList<QStandardItem *> rowItems;
 };

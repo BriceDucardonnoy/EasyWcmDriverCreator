@@ -3,5 +3,10 @@
         <file alias="leaf">icons/leaf.png</file>
         <file alias="folder_open">icons/folder_open.png</file>
         <file alias="folder_closed">icons/folder_closed.png</file>
+        <file alias="trap">icons/lightning.png</file>
+        <file alias="obsolete">icons/obsolete.png</file>
+        <file alias="gauge">icons/gauge.png</file>
+        <file alias="enum">icons/enum.png</file>
+        <file alias="text">icons/text.png</file>
     </qresource>
 </RCC>
