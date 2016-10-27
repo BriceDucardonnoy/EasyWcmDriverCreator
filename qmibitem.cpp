@@ -92,12 +92,27 @@ void QMibItem::checkItemStates(QStandardItem *item)
 
 void QMibItem::connectCheck()
 {
-    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
+//    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
+//    if(isLeaf)
+//    {
+//        connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
+//    }
 //    foreach(QMibItem *child, children)
 //    {
 //        child->connectCheck();
 //    }
+}
 
+QMibItem *QMibItem::findChildByName(const QString &name)
+{
+    if(getName().compare(name) == 0) return this;
+    QMibItem *node = NULL;
+    foreach(QMibItem *child, children)
+    {
+        node = child->findChildByName(name);
+        if(node != NULL) break;
+    }
+    return node;
 }
 
 void QMibItem::addChild(QMibItem *child)

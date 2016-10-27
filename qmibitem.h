@@ -4,7 +4,7 @@
 #include <qlist.h>
 #include <QStandardItem>
 
-class QMibItem : public /*QStandardItem*/QObject
+class QMibItem : public QObject, public QStandardItem
 {
     Q_OBJECT
 public:
@@ -48,6 +48,8 @@ public:
     void setIsCurrent(bool value);
 
     void connectCheck();
+
+    QMibItem *findChildByName(const QString &);
 
 protected:
 

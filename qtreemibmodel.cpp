@@ -50,7 +50,7 @@ bool QTreeMibModel::createModel(QFile *mibfile)
     // Bind the (un)check event
 //    connect(root->getItems()[0]->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(checkItemStates(QStandardItem*)));
 //    connect(this,SIGNAL(itemChanged(QStandardItem*)),root,SLOT(checkItemStates(QStandardItem*)));
-//    connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
+    connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
 
 //    root->model()->connect(this,SIGNAL(itemChanged(QStandardItem*)),SLOT(checkItemStates(QStandardItem*)));
     root->connectCheck();
@@ -62,6 +62,13 @@ void QTreeMibModel::checkItemStates(QStandardItem *item)
     qInfo() << "PATATE" << item->text() << "at row" << item->row() << "and column" << item->column();
 //    QMibItem *node = (QMibItem*) item;
 //    qInfo() << "NODE" << node->getName() << node->getOid();
+
+    QMibItem *node = this->moduleIdentity->findChildByName(item->text());
+    if(node != NULL)
+    {
+        qInfo() << "Node is" << node->toString();
+        // TODO BDY: (un)check all children and/or display values in the right panel
+    }
 }
 
 /**
