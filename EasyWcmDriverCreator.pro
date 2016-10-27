@@ -14,12 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    treemibmodel.cpp \
-    mibitem.cpp
+    qmibitem.cpp \
+    qtreemibmodel.cpp
 
 HEADERS  += mainwindow.h \
-    treemibmodel.h \
-    mibitem.h
+    qmibitem.h \
+    qtreemibmodel.h
 
 FORMS    += mainwindow.ui
 

@@ -1,16 +1,21 @@
 #include <qdebug.h>
 #include <qicon.h>
 
-#include "mibitem.h"
+#include "qmibitem.h"
 
-MibItem::~MibItem()
+QMibItem::~QMibItem()
 {
-    foreach (QStandardItem *item, rowItems) {
+    foreach (QStandardItem *item, rowItems)
+    {
         delete(item);
+    }
+    foreach(QMibItem *child, children)
+    {
+        delete(child);
     }
 }
 
-MibItem::MibItem(QString name, QString oid)
+QMibItem::QMibItem(QString name, QString oid)
     : isLeaf(true), isReadOnly(true), min(0), max(0)
 {
     this->name = name;
@@ -19,16 +24,21 @@ MibItem::MibItem(QString name, QString oid)
     rowItems << new QStandardItem(oid);
     rowItems << new QStandardItem(description);
 
-    foreach (QStandardItem* item, rowItems) {
+    rowItems[0]->setCheckable(true);
+    rowItems[0]->setTristate(true);
+    foreach (QStandardItem* item, rowItems)
+    {
         item->setEditable(false);
     }
 }
 
-const QList<QStandardItem *> MibItem::createOrUpdateItems()
+const QList<QStandardItem *> QMibItem::createOrUpdateItems()
 {
-    rowItems.at(0)->setText(name);
+    QStandardItem *first = rowItems.at(0);
+    first->setText(name);
     rowItems.at(1)->setText(oid);
     rowItems.at(2)->setText(description);
+
     // Really much faster to declare icons each time here rather than in constructor
 //    QIcon iconLeaf(":/icons/leaf");
 //    QIcon iconFolder(":/icons/folder_closed");
@@ -69,49 +79,62 @@ const QList<QStandardItem *> MibItem::createOrUpdateItems()
         icon.addFile(":/icons/folder_closed");
         icon.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
     }
-    rowItems.at(0)->setIcon(icon);
+    first->setIcon(icon);
+//    connect(first, SIGNAL(itemChanged(QStandardItem*)), first, SLOT(checkItemStates(QStandardItem*)));
+
     return getItems();
 }
 
-MibItem::AsnBasicType MibItem::getAsnBasicType() const
+void QMibItem::checkItemStates(QStandardItem *item)
 {
-    return type;
+    qInfo() << "Hello" << getName() << item->text();
 }
 
-void MibItem::setAsnBasicType(const AsnBasicType &value)
+void QMibItem::connectCheck()
 {
-    type = value;
+    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
+//    foreach(QMibItem *child, children)
+//    {
+//        child->connectCheck();
+//    }
+
 }
 
-bool MibItem::getIsCurrent() const
-{
-    return isCurrent;
-}
-
-void MibItem::setIsCurrent(bool value)
-{
-    isCurrent = value;
-}
-
-const QList<QStandardItem *> MibItem::getItems() {
-    return rowItems;
-}
-
-void MibItem::addChild(MibItem *child)
+void QMibItem::addChild(QMibItem *child)
 {
     int id = 0;//rowItems.size();
     isLeaf = false;
     child->createOrUpdateItems();
     qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << rowItems.at(id)->rowCount() << "at address" << child;
     rowItems.at(id)->appendRow(child->getItems());
-//    for(int i = 0 ; i < /*rowItems.size()*/rowItems.at(id)->columnCount() ; i++)
-//    {
-//        rowItems.at(id)->setChild(idx, i, child->getItems().at(i));
-//    }
-
+    children.append(child);
 }
 
-QString MibItem::toString() const
+QMibItem::AsnBasicType QMibItem::getAsnBasicType() const
+{
+    return type;
+}
+
+void QMibItem::setAsnBasicType(const AsnBasicType &value)
+{
+    type = value;
+}
+
+bool QMibItem::getIsCurrent() const
+{
+    return isCurrent;
+}
+
+void QMibItem::setIsCurrent(bool value)
+{
+    isCurrent = value;
+}
+
+const QList<QStandardItem *> QMibItem::getItems() {
+    return rowItems;
+}
+
+QString QMibItem::toString() const
 {
     return getOid() + "->" + getName()
             + (isLeaf ?
@@ -120,72 +143,72 @@ QString MibItem::toString() const
             : "");
 }
 
-QString MibItem::getName() const
+QString QMibItem::getName() const
 {
     return name;
 }
 
-void MibItem::setName(const QString &value)
+void QMibItem::setName(const QString &value)
 {
     name = value;
 }
 
-bool MibItem::getIsLeaf() const
+bool QMibItem::getIsLeaf() const
 {
     return isLeaf;
 }
 
-void MibItem::setIsLeaf(bool value)
+void QMibItem::setIsLeaf(bool value)
 {
     isLeaf = value;
 }
 
-QString MibItem::getOid() const
+QString QMibItem::getOid() const
 {
     return oid;
 }
 
-void MibItem::setOid(const QString &value)
+void QMibItem::setOid(const QString &value)
 {
     oid = value;
 }
 
-bool MibItem::getIsReadOnly() const
+bool QMibItem::getIsReadOnly() const
 {
     return isReadOnly;
 }
 
-void MibItem::setIsReadOnly(bool value)
+void QMibItem::setIsReadOnly(bool value)
 {
     isReadOnly = value;
 }
 
-int MibItem::getMin() const
+int QMibItem::getMin() const
 {
     return min;
 }
 
-void MibItem::setMin(int value)
+void QMibItem::setMin(int value)
 {
     min = value;
 }
 
-int MibItem::getMax() const
+int QMibItem::getMax() const
 {
     return max;
 }
 
-void MibItem::setMax(int value)
+void QMibItem::setMax(int value)
 {
     max = value;
 }
 
-QString MibItem::getDescription() const
+QString QMibItem::getDescription() const
 {
     return description;
 }
 
-void MibItem::setDescription(const QString &value)
+void QMibItem::setDescription(const QString &value)
 {
     description = value;
 }

@@ -1,18 +1,16 @@
 #include <QMessageBox>
-#include <qtextstream.h>
 #include <qdebug.h>
-#include <qfile.h>
 
-#include "mibitem.h"
-#include "treemibmodel.h"
+#include "qmibitem.h"
+#include "qtreemibmodel.h"
 
-TreeMibModel::TreeMibModel(QObject *parent)
+QTreeMibModel::QTreeMibModel(QObject *parent)
     : QStandardItemModel(parent)
 {
-    moduleIdentity = new MibItem();
+    moduleIdentity = new QMibItem();
 }
 
-TreeMibModel::~TreeMibModel()
+QTreeMibModel::~QTreeMibModel()
 {
     if(moduleIdentity != NULL)
     {
@@ -21,9 +19,9 @@ TreeMibModel::~TreeMibModel()
     }
 }
 
-TreeMibModel::TreeMibModel(QString mibfile)
+QTreeMibModel::QTreeMibModel(QString mibfile)
 {
-    moduleIdentity = new MibItem();
+    moduleIdentity = new QMibItem();
     QFile file(mibfile);
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -38,19 +36,32 @@ TreeMibModel::TreeMibModel(QString mibfile)
     file.close();
 }
 
-bool TreeMibModel::createModel(QFile *mibfile)
+bool QTreeMibModel::createModel(QFile *mibfile)
 {
     QTextStream in(mibfile);// <=> QTextStream in = new QTextStream(&mibfile);
 
-    MibItem *root = new MibItem();
+    QMibItem *root = new QMibItem();
     this->setHorizontalHeaderItem(0, new QStandardItem(tr("Name")));
     this->setHorizontalHeaderItem(1, new QStandardItem(tr("OID")));
     this->setHorizontalHeaderItem(2, new QStandardItem(tr("Description")));
 
     appendRow(root->getItems());
     createModel(&in, root);
+    // Bind the (un)check event
+//    connect(root->getItems()[0]->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(checkItemStates(QStandardItem*)));
+//    connect(this,SIGNAL(itemChanged(QStandardItem*)),root,SLOT(checkItemStates(QStandardItem*)));
+//    connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
 
+//    root->model()->connect(this,SIGNAL(itemChanged(QStandardItem*)),SLOT(checkItemStates(QStandardItem*)));
+    root->connectCheck();
     return true;
+}
+
+void QTreeMibModel::checkItemStates(QStandardItem *item)
+{
+    qInfo() << "PATATE" << item->text() << "at row" << item->row() << "and column" << item->column();
+//    QMibItem *node = (QMibItem*) item;
+//    qInfo() << "NODE" << node->getName() << node->getOid();
 }
 
 /**
@@ -58,11 +69,11 @@ bool TreeMibModel::createModel(QFile *mibfile)
  * @param stream The QTextStream of the MIB file
  * @param parent The parent node to look children for
  */
-void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
+void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
     static bool identityFound = false;
     bool nodeFound = false;
     bool endNodeReached = false;
-    MibItem *child;
+    QMibItem *child;
     QString line;
 
     while(!stream->atEnd())
@@ -84,17 +95,17 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
         else if(!nodeFound &&
                 (line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive) || line.contains("OBJECT-TYPE", Qt::CaseInsensitive)))// Start of an object declaration
         {
-            child = new MibItem();
+            child = new QMibItem();
             child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
 //            qInfo() << "Node named found " << child->getName();
-            child->setAsnBasicType(MibItem::Leaf);
+            child->setAsnBasicType(QMibItem::Leaf);
             nodeFound = true;
         }
         else if(!nodeFound && line.contains("NOTIFICATION-TYPE", Qt::CaseInsensitive))// Start of an object declaration
         {
-            child = new MibItem();
+            child = new QMibItem();
             child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
-            child->setAsnBasicType(MibItem::Trap);
+            child->setAsnBasicType(QMibItem::Trap);
             nodeFound = true;
         }
         // Node found, looking for a end
@@ -138,7 +149,7 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
         {
             if(line.contains("Gauge32", Qt::CaseInsensitive))
             {
-                child->setAsnBasicType(MibItem::Gauge);
+                child->setAsnBasicType(QMibItem::Gauge);
                 if(line.contains("("))
                 {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
@@ -148,7 +159,7 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
             }
             else if(line.contains("Integer32", Qt::CaseInsensitive))
             {
-                child->setAsnBasicType(MibItem::S32);
+                child->setAsnBasicType(QMibItem::S32);
                 if(line.contains("("))
                 {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
@@ -158,7 +169,7 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
             }
             else if(line.contains("Unsigned32", Qt::CaseInsensitive))
             {
-                child->setAsnBasicType(MibItem::U32);
+                child->setAsnBasicType(QMibItem::U32);
                 if(line.contains("("))
                 {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
@@ -166,10 +177,10 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
                     child->setMax(lineData[1].toInt());
                 }
             }
-            else if(line.contains("Integer", Qt::CaseInsensitive)) child->setAsnBasicType(MibItem::EnumInt);
+            else if(line.contains("Integer", Qt::CaseInsensitive)) child->setAsnBasicType(QMibItem::EnumInt);
             else if(line.contains("DisplayString", Qt::CaseInsensitive))
             {
-                child->setAsnBasicType(MibItem::OctetString);
+                child->setAsnBasicType(QMibItem::OctetString);
                 if(line.contains("SIZE(", Qt::CaseInsensitive))
                 {
                     QStringList lineData = line.mid(line.indexOf("SIZE(") + 1,
@@ -189,13 +200,6 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
         }
         else if(nodeFound && line.contains("DESCRIPTION", Qt::CaseInsensitive))
         {
-            // Get all lines until the ::=
-            // Too slow
-//            qint64 pos = stream->pos();
-//            line += getDescriptionString(stream);
-//            stream->seek(pos);
-//            // Update description now
-//            child->setDescription(line.remove("DESCRIPTION").remove("\"").remove("No description").trimmed());
             QString descr = "";
             while(!stream->atEnd() && !(line = stream->readLine()).contains("::="))
             {
@@ -205,15 +209,4 @@ void TreeMibModel::createModel(QTextStream *stream, MibItem *parent) {
             endNodeReached = true;
         }
     }
-}
-
-QString TreeMibModel::getDescriptionString(QTextStream *stream)
-{
-    QString descr, line;
-
-    while(!stream->atEnd() && !(line = stream->readLine()).contains("::="))
-    {
-        descr += line;
-    }
-    return descr;
 }

@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void loadMib(QString mibPath);
 
 private slots:
     void on_action_Charger_une_MIB_triggered();

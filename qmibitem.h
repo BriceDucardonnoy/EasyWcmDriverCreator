@@ -4,11 +4,12 @@
 #include <qlist.h>
 #include <QStandardItem>
 
-class MibItem
+class QMibItem : public /*QStandardItem*/QObject
 {
+    Q_OBJECT
 public:
-    ~MibItem();
-    MibItem(QString name = "enterprises", QString oid = ".1.3.6.1.4.1");
+    ~QMibItem();
+    QMibItem(QString name = "enterprises", QString oid = ".1.3.6.1.4.1");
 
     QString getName() const;
     void setName(const QString &value);
@@ -31,7 +32,7 @@ public:
     QString getDescription() const;
     void setDescription(const QString &value);
 
-    void addChild(MibItem *child);
+    void addChild(QMibItem *child);
     QString toString() const;
 
     const QList<QStandardItem *> getItems();
@@ -46,7 +47,12 @@ public:
     bool getIsCurrent() const;
     void setIsCurrent(bool value);
 
+    void connectCheck();
+
 protected:
+
+public slots:
+    void checkItemStates(QStandardItem*);
 
 private:
     QString name;
@@ -59,6 +65,7 @@ private:
     int max;// FIXME BDY: can be s32, or u32
     QString description;
     QList<QStandardItem *> rowItems;
+    QList<QMibItem*> children;
 };
 
 #endif // MIBITEM_H
