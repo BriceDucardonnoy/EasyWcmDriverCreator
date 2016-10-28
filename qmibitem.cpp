@@ -78,14 +78,8 @@ const QList<QStandardItem *> QMibItem::createOrUpdateItems()
         icon.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
     }
     first->setIcon(icon);
-//    connect(first, SIGNAL(itemChanged(QStandardItem*)), first, SLOT(checkItemStates(QStandardItem*)));
 
     return getItems();
-}
-
-void QMibItem::checkItemStates(QStandardItem *item)
-{
-    qInfo() << "Hello" << getName() << item->text();
 }
 
 QMibItem *QMibItem::getParent() const
@@ -138,19 +132,6 @@ void QMibItem::setCheckStateRecursive(Qt::CheckState state)
     {
         parent->updateStateAscending();
     }
-}
-
-void QMibItem::connectCheck()
-{
-    //    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
-//    if(isLeaf)
-//    {
-//        connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
-//    }
-//    foreach(QMibItem *child, children)
-//    {
-//        child->connectCheck();
-//    }
 }
 
 QMibItem *QMibItem::findChildByName(const QString &name)

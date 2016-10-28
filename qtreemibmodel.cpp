@@ -48,12 +48,8 @@ bool QTreeMibModel::createModel(QFile *mibfile)
     appendRow(root->getItems());
     createModel(&in, root);
     // Bind the (un)check event
-//    connect(root->getItems()[0]->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(checkItemStates(QStandardItem*)));
-//    connect(this,SIGNAL(itemChanged(QStandardItem*)),root,SLOT(checkItemStates(QStandardItem*)));
     connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
 
-//    root->model()->connect(this,SIGNAL(itemChanged(QStandardItem*)),SLOT(checkItemStates(QStandardItem*)));
-    root->connectCheck();
     return true;
 }
 

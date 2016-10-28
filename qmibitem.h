@@ -45,7 +45,6 @@ public:
     void setAsnBasicType(const AsnBasicType &value);
     bool getIsCurrent() const;
     void setIsCurrent(bool value);
-    void connectCheck();
     QMibItem *findChildByName(const QString &);
     QMibItem *getParent() const;
     void setParent(QMibItem *value);
@@ -55,7 +54,6 @@ protected:
     void updateStateAscending();
 
 public slots:
-    void checkItemStates(QStandardItem*);
 
 private:
     QString name;
