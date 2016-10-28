@@ -128,7 +128,7 @@ void QMibItem::setCheckStateRecursive(Qt::CheckState state)
             child->setCheckStateRecursive(state);
         }
     }
-    if(parent->getCheckState() != getCheckState())
+    if(parent != NULL && parent->getCheckState() != getCheckState())
     {
         parent->updateStateAscending();
     }

@@ -212,7 +212,38 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="typeComboBox"/>
+          <widget class="QComboBox" name="typeComboBox">
+           <item>
+            <property name="text">
+             <string>Discover</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Alarm</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Warning</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Info</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Text</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Reading</string>
+            </property>
+           </item>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="mesureLabel">
@@ -243,6 +274,16 @@
          </item>
          <item row="3" column="1">
           <widget class="QLineEdit" name="nomLineEdit"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="oidLabel">
+           <property name="text">
+            <string>OID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="oidLineEdit"/>
          </item>
         </layout>
        </item>

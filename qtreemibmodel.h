@@ -20,13 +20,25 @@ public:
 
     void createModel(QTextStream *stream, QTreeMibModel *parent);
     void createModel(QTextStream *stream, QMibItem *parent);
+    /**
+     * @brief QTreeMibModel::getMibNodeFromIndex Find the MibNode from its QModelIndex
+     * @param index The QModelIndex
+     * @return The MibNode* or NULL if not found
+     */
+    QMibItem *getMibNodeFromIndex(const QModelIndex &index);
 protected:
+    /**
+     * @brief TreeMibModel::createModel Recursive method to create the tree model
+     * @param stream The QTextStream of the MIB file
+     * @param parent The parent node to look children for
+     */
     void createModel(QTextStream *stream, const QMibItem *parent);
     bool createModel(QFile *mibfile);
     void findNode(QTextStream *stream, QTreeMibModel *parent);
 private slots:
     void checkItemStates(QStandardItem *);
 private:
+    QMibItem *root;
     QMibItem *moduleIdentity;
     QString moduleIdentityParentName;
 };

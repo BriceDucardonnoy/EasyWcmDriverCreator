@@ -12,6 +12,11 @@ QTreeMibModel::QTreeMibModel(QObject *parent)
 
 QTreeMibModel::~QTreeMibModel()
 {
+    if(root != NULL)
+    {
+        delete(root);
+        root = NULL;
+    }
     if(moduleIdentity != NULL)
     {
         delete(moduleIdentity);
@@ -40,7 +45,7 @@ bool QTreeMibModel::createModel(QFile *mibfile)
 {
     QTextStream in(mibfile);// <=> QTextStream in = new QTextStream(&mibfile);
 
-    QMibItem *root = new QMibItem();
+    root = new QMibItem();
     this->setHorizontalHeaderItem(0, new QStandardItem(tr("Name")));
     this->setHorizontalHeaderItem(1, new QStandardItem(tr("OID")));
     this->setHorizontalHeaderItem(2, new QStandardItem(tr("Description")));
@@ -55,9 +60,9 @@ bool QTreeMibModel::createModel(QFile *mibfile)
 
 void QTreeMibModel::checkItemStates(QStandardItem *item)
 {
-    qInfo() << "PATATE" << item->text() << "at row" << item->row() << "and column" << item->column();
+    qInfo() << "(Un)checked" << item->text() << "at row" << item->row() << "and column" << item->column();
 
-    QMibItem *node = this->moduleIdentity->findChildByName(item->text());
+    QMibItem *node = root->findChildByName(item->text());
     if(node != NULL)
     {
 //        qInfo() << "Node is" << node->toString();
@@ -65,6 +70,18 @@ void QTreeMibModel::checkItemStates(QStandardItem *item)
         node->setCheckStateRecursive(item->checkState());
         connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
     }
+}
+
+/**
+ * @brief QTreeMibModel::getMibNodeFromIndex Find the MibNode from its QModelIndex
+ * @param index The QModelIndex
+ * @return The MibNode* or NULL if not found
+ */
+QMibItem *QTreeMibModel::getMibNodeFromIndex(const QModelIndex &index)
+{
+    QStandardItem *item = itemFromIndex(index);
+    if(item == NULL) return NULL;
+    return root->findChildByName(item->text());
 }
 
 /**
@@ -76,7 +93,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
     static bool identityFound = false;
     bool nodeFound = false;
     bool endNodeReached = false;
-    QMibItem *child;
+    QMibItem *child = NULL;
     QString line;
 
     while(!stream->atEnd())
@@ -93,6 +110,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         {
             moduleIdentity->setName(line.split(" ", QString::SkipEmptyParts)[0]);
             moduleIdentity->setOid("");
+            child = moduleIdentity;
             nodeFound = true;
         }
         else if(!nodeFound &&
@@ -114,7 +132,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         // Node found, looking for a end
         else if(nodeFound && line.contains("::="))
         {
-            if(!identityFound && moduleIdentity->getOid().isEmpty())// We're founding the module identity data
+            if(!identityFound && !moduleIdentity->getName().isEmpty() && moduleIdentity->getOid().isEmpty())// We're founding the module identity data
             {
                 identityFound = true;
                 QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - line.indexOf("{") - 1).trimmed().split(" ");
@@ -147,6 +165,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 }
             }
             nodeFound = false;
+            child = NULL;
         }
         else if(nodeFound && line.contains("SYNTAX", Qt::CaseInsensitive))
         {

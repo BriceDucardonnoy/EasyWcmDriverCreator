@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QItemSelection>
+#include "qmibitem.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,8 +18,11 @@ public:
     ~MainWindow();
     void loadMib(QString mibPath);
 
+    void clearRightPane();
+    void populateRightPane(QMibItem *node);
 private slots:
     void on_action_Charger_une_MIB_triggered();
+    void selectedLineChanged(QItemSelection, QItemSelection);
 
 private:
     Ui::MainWindow *ui;
