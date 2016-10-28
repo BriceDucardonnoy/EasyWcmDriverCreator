@@ -20,18 +20,15 @@ public:
 
     void createModel(QTextStream *stream, QTreeMibModel *parent);
     void createModel(QTextStream *stream, QMibItem *parent);
-
 protected:
     void createModel(QTextStream *stream, const QMibItem *parent);
-
+    bool createModel(QFile *mibfile);
+    void findNode(QTextStream *stream, QTreeMibModel *parent);
 private slots:
     void checkItemStates(QStandardItem *);
-
 private:
     QMibItem *moduleIdentity;
     QString moduleIdentityParentName;
-    bool createModel(QFile *mibfile);
-    void findNode(QTextStream *stream, QTreeMibModel *parent);
 };
 
 #endif // TREEMIBMODEL_H

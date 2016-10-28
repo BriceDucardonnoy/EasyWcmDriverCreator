@@ -16,16 +16,14 @@ QMibItem::~QMibItem()
 }
 
 QMibItem::QMibItem(QString name, QString oid)
-    : isLeaf(true), isReadOnly(true), min(0), max(0)
+    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), parent(NULL)
 {
-    this->name = name;
-    this->oid = oid;
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
     rowItems << new QStandardItem(description);
 
     rowItems[0]->setCheckable(true);
-    rowItems[0]->setTristate(true);
+    rowItems[0]->setTristate(false);
     foreach (QStandardItem* item, rowItems)
     {
         item->setEditable(false);
@@ -90,9 +88,61 @@ void QMibItem::checkItemStates(QStandardItem *item)
     qInfo() << "Hello" << getName() << item->text();
 }
 
+QMibItem *QMibItem::getParent() const
+{
+    return parent;
+}
+
+void QMibItem::setParent(QMibItem *value)
+{
+    parent = value;
+}
+
+Qt::CheckState QMibItem::getCheckState()
+{
+    return rowItems[0]->checkState();
+}
+
+void QMibItem::updateStateAscending()
+{
+    if(isLeaf) return;
+    Qt::CheckState childState = children.at(0)->getCheckState();
+
+    foreach(QMibItem *child, children)
+    {
+        if(childState != child->getCheckState())
+        {
+            childState = Qt::PartiallyChecked;
+            break;
+        }
+    }
+    rowItems[0]->setCheckState(childState);
+
+    if(parent != NULL && parent->getCheckState() != getCheckState())
+    {
+        parent->updateStateAscending();
+    }
+}
+
+void QMibItem::setCheckStateRecursive(Qt::CheckState state)
+{
+    rowItems[0]->setCheckState(state);
+    if(!isLeaf)
+    {
+        foreach(QMibItem *child, children)
+        {
+            child->setCheckStateRecursive(state);
+        }
+    }
+    if(parent->getCheckState() != getCheckState())
+    {
+        parent->updateStateAscending();
+    }
+}
+
 void QMibItem::connectCheck()
 {
-//    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
+    //    connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
 //    if(isLeaf)
 //    {
 //        connect(rowItems.at(0)->model(), SIGNAL(itemChanged(QStandardItem*)), this, SLOT(checkItemStates(QStandardItem*)));
@@ -119,10 +169,13 @@ void QMibItem::addChild(QMibItem *child)
 {
     int id = 0;//rowItems.size();
     isLeaf = false;
+    rowItems[0]->setTristate(true);// Partially checked possible if it has children
     child->createOrUpdateItems();
-    qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << rowItems.at(id)->rowCount() << "at address" << child;
+    qInfo() << "Add children" << child->toString() << "to parent" << toString() << "at row" << rowItems.at(id)->rowCount()
+            << "at address" << child;
     rowItems.at(id)->appendRow(child->getItems());
     children.append(child);
+    child->setParent(this);
 }
 
 QMibItem::AsnBasicType QMibItem::getAsnBasicType() const
@@ -154,7 +207,8 @@ QString QMibItem::toString() const
     return getOid() + "->" + getName()
             + (isLeaf ?
                 ("[" + QString::number(getMin()) + "," + QString::number(getMax())
-                + "] read-only: " + QString::number(getIsReadOnly()) + " current: " + QString::number(getIsCurrent()) + " ASN type: " + QString::number(getAsnBasicType()))
+                + "] read-only: " + QString::number(getIsReadOnly()) + " current: " + QString::number(getIsCurrent())
+                + " ASN type: " + QString::number(getAsnBasicType()))
             : "");
 }
 

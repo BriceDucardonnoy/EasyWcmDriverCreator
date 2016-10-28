@@ -60,14 +60,14 @@ bool QTreeMibModel::createModel(QFile *mibfile)
 void QTreeMibModel::checkItemStates(QStandardItem *item)
 {
     qInfo() << "PATATE" << item->text() << "at row" << item->row() << "and column" << item->column();
-//    QMibItem *node = (QMibItem*) item;
-//    qInfo() << "NODE" << node->getName() << node->getOid();
 
     QMibItem *node = this->moduleIdentity->findChildByName(item->text());
     if(node != NULL)
     {
-        qInfo() << "Node is" << node->toString();
-        // TODO BDY: (un)check all children and/or display values in the right panel
+//        qInfo() << "Node is" << node->toString();
+        disconnect(this,SIGNAL(itemChanged(QStandardItem*)),0, 0);
+        node->setCheckStateRecursive(item->checkState());
+        connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
     }
 }
 

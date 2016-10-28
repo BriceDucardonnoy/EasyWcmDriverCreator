@@ -4,7 +4,7 @@
 #include <qlist.h>
 #include <QStandardItem>
 
-class QMibItem : public QObject, public QStandardItem
+class QMibItem : public QObject//, public QStandardItem
 {
     Q_OBJECT
 public:
@@ -43,15 +43,16 @@ public:
 
     AsnBasicType getAsnBasicType() const;
     void setAsnBasicType(const AsnBasicType &value);
-
     bool getIsCurrent() const;
     void setIsCurrent(bool value);
-
     void connectCheck();
-
     QMibItem *findChildByName(const QString &);
-
+    QMibItem *getParent() const;
+    void setParent(QMibItem *value);
+    void setCheckStateRecursive(Qt::CheckState state);
+    Qt::CheckState getCheckState();
 protected:
+    void updateStateAscending();
 
 public slots:
     void checkItemStates(QStandardItem*);
@@ -68,6 +69,7 @@ private:
     QString description;
     QList<QStandardItem *> rowItems;
     QList<QMibItem*> children;
+    QMibItem* parent;
 };
 
 #endif // MIBITEM_H
