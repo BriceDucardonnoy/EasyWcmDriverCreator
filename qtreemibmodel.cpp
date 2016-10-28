@@ -114,7 +114,9 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             nodeFound = true;
         }
         else if(!nodeFound &&
-                (line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive) || line.contains("OBJECT-TYPE", Qt::CaseInsensitive)))// Start of an object declaration
+                (line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive) ||
+                 line.contains("OBJECT-TYPE", Qt::CaseInsensitive) ||
+                 line.contains("OBJECT IDENTIFIER", Qt::CaseInsensitive)))// Start of an object declaration
         {
             child = new QMibItem();
             child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
@@ -130,7 +132,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             nodeFound = true;
         }
         // Node found, looking for a end
-        else if(nodeFound && line.contains("::="))
+        if(nodeFound && line.contains("::="))
         {
             if(!identityFound && !moduleIdentity->getName().isEmpty() && moduleIdentity->getOid().isEmpty())// We're founding the module identity data
             {
