@@ -72,6 +72,11 @@ void QTreeMibModel::checkItemStates(QStandardItem *item)
     }
 }
 
+QString QTreeMibModel::getModuleName() const
+{
+    return moduleName;
+}
+
 /**
  * @brief QTreeMibModel::getMibNodeFromIndex Find the MibNode from its QModelIndex
  * @param index The QModelIndex
@@ -106,7 +111,12 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             line = stream->readLine();
         }
         // Node not found, looking for a start
-        if(line.contains("MODULE-IDENTITY", Qt::CaseInsensitive) && !line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// We skip the IMPORTS line
+        if(line.contains("DEFINITIONS") && line.contains("::=") && line.contains("BEGIN"))
+        {
+            moduleName = line.split(" ", QString::SkipEmptyParts)[0];
+            continue;
+        }
+        else if(line.contains("MODULE-IDENTITY", Qt::CaseInsensitive) && !line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// We skip the IMPORTS line
         {
             moduleIdentity->setName(line.split(" ", QString::SkipEmptyParts)[0]);
             moduleIdentity->setOid("");
