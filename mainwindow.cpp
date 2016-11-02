@@ -37,6 +37,9 @@ void MainWindow::loadMib(QString mibPath)
 //    ui->mibTreeView->expandAll();
     ui->mibTreeView->expandToDepth(4);
     connect(ui->mibTreeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectedLineChanged(QItemSelection,QItemSelection)));
+    ui->driverNameLineEdit->setText(tmm->getModuleName());
+    ui->refreshRateSpinBox->setValue(15);
+    on_measureCheckBox_stateChanged(ui->measureCheckBox->isChecked() == true);
     QApplication::restoreOverrideCursor();
 }
 
@@ -76,16 +79,28 @@ void MainWindow::populateRightPane(QMibItem *node)
         return;
     }
     qInfo() << node->toString();
-    ui->widget->findChild<QCheckBox *>("dansLaMIBCheckBox")->setChecked(true);
-    ui->widget->findChild<QCheckBox *>("mesureCheckBox")->setChecked(node->getAsnBasicType() == QMibItem::Gauge);
-    QLineEdit *name = ui->widget->findChild<QLineEdit *>("nomLineEdit");
+    ui->widgets->findChild<QCheckBox *>("inMIBCheckBox")->setChecked(true);
+    ui->widgets->findChild<QCheckBox *>("measureCheckBox")->setChecked(node->getAsnBasicType() == QMibItem::Gauge);
+    QLineEdit *name = ui->widgets->findChild<QLineEdit *>("nameLineEdit");
     if(name != NULL)
     {
         name->setText(node->getName());
     }
-    QLineEdit *oid = ui->widget->findChild<QLineEdit *>("oidLineEdit");
+    QLineEdit *oid = ui->widgets->findChild<QLineEdit *>("oidLineEdit");
     if(oid != NULL)
     {
         oid->setText(node->getOid());
+    }
+}
+
+void MainWindow::on_measureCheckBox_stateChanged(int arg1)
+{
+    if(arg1 == 0)// Unchecked
+    {
+        ui->identifierWidgets->show();
+    }
+    else
+    {
+        ui->identifierWidgets->hide();
     }
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1174</width>
-    <height>740</height>
+    <height>890</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="widget" native="true">
+     <widget class="QWidget" name="widgets" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QFormLayout" name="mainInfoForm">
@@ -44,17 +44,17 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="nomDuDriverLineEdit"/>
+          <widget class="QLineEdit" name="driverNameLineEdit"/>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="versionDuDriverLabel">
+          <widget class="QLabel" name="driverVersionLabel">
            <property name="text">
             <string>Version du driver</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="versionDuDriverLineEdit"/>
+          <widget class="QLineEdit" name="driverVersionLineEdit"/>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="familleLabel">
@@ -64,7 +64,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="familleLineEdit"/>
+          <widget class="QLineEdit" name="driverFamilyLineEdit"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="cheminDuSVGLabel">
@@ -74,7 +74,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="cheminDuSVGLineEdit"/>
+          <widget class="QLineEdit" name="svgLineEdit"/>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="vendeurLabel">
@@ -84,7 +84,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="vendeurLineEdit"/>
+          <widget class="QLineEdit" name="vendorLineEdit"/>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="typeDuSystMeLabel">
@@ -94,7 +94,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="typeDuSystMeLineEdit"/>
+          <widget class="QLineEdit" name="systemTypeLineEdit"/>
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="nomDuSystMeLabel">
@@ -104,7 +104,7 @@
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="QLineEdit" name="nomDuSystMeLineEdit"/>
+          <widget class="QLineEdit" name="systemNameLineEdit"/>
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="drapeauLabel">
@@ -114,7 +114,7 @@
           </widget>
          </item>
          <item row="7" column="1">
-          <widget class="QLineEdit" name="drapeauLineEdit"/>
+          <widget class="QLineEdit" name="flagLineEdit"/>
          </item>
         </layout>
        </item>
@@ -158,7 +158,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QSpinBox" name="frQuenceDeRafraChissementSpinBox"/>
+          <widget class="QSpinBox" name="refreshRateSpinBox"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="scriptEasyLabel">
@@ -178,7 +178,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QCheckBox" name="canauxFMCheckBox"/>
+          <widget class="QCheckBox" name="fmChannelCheckBox"/>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="uRLLabel">
@@ -188,7 +188,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="uRLLineEdit"/>
+          <widget class="QLineEdit" name="urlLineEdit"/>
          </item>
         </layout>
        </item>
@@ -204,6 +204,16 @@
          <property name="sizeConstraint">
           <enum>QLayout::SetMaximumSize</enum>
          </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="mesureLabel">
+           <property name="text">
+            <string>Mesure</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="measureCheckBox"/>
+         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="typeLabel">
            <property name="text">
@@ -245,16 +255,6 @@
            </item>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="mesureLabel">
-           <property name="text">
-            <string>Mesure</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="mesureCheckBox"/>
-         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="dansLaMIBLabel">
            <property name="text">
@@ -263,7 +263,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QCheckBox" name="dansLaMIBCheckBox"/>
+          <widget class="QCheckBox" name="inMIBCheckBox"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="nomLabel">
@@ -273,7 +273,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="nomLineEdit"/>
+          <widget class="QLineEdit" name="nameLineEdit"/>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="oidLabel">
@@ -285,17 +285,114 @@
          <item row="4" column="1">
           <widget class="QLineEdit" name="oidLineEdit"/>
          </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="operateurLabel">
-           <property name="text">
-            <string>Operateur</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="operateurLineEdit"/>
-         </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QWidget" name="identifierWidgets" native="true">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>50</width>
+           <height>100</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="identifierForm">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="operatorLabel">
+              <property name="text">
+               <string>Opérateur</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="operatorComboBox">
+              <item>
+               <property name="text">
+                <string>Is Present</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Equal</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Like</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is More</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Less</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is More or Equal</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Less or Equal</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Different</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Is Not Present</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="expectedValueLabel">
+              <property name="text">
+               <string>Valeur attendue</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="expectedValueLineEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

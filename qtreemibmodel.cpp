@@ -139,6 +139,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             child = new QMibItem();
             child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
             child->setAsnBasicType(QMibItem::Trap);
+            child->getItems()[0]->setCheckable(false);// We don't export traps
             nodeFound = true;
         }
         // Node found, looking for a end
