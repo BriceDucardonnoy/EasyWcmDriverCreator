@@ -97,8 +97,8 @@ void MainWindow::on_measureCheckBox_stateChanged(int arg1)
 {
     if(arg1 == 0)// Unchecked
     {
-        ui->identifierWidgets->show();
         ui->identifierReadingWidgets->hide();
+        ui->identifierWidgets->show();
     }
     else
     {
