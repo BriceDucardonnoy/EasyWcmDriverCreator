@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1174</width>
-    <height>890</height>
+    <height>973</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -375,6 +375,82 @@
             </item>
             <item row="2" column="1">
              <widget class="QLineEdit" name="expectedValueLineEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="identifierReadingWidgets" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="identifierReadingForm">
+            <item row="0" column="0">
+             <widget class="QLabel" name="minLabel">
+              <property name="text">
+               <string>Min</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="minSpinBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="maxLabel">
+              <property name="text">
+               <string>Max</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="maxSpinBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="factorLabel">
+              <property name="text">
+               <string>Facteur</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="factorLineEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="precisionLabel">
+              <property name="text">
+               <string>Précision</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="precisionLineEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="unitLabel">
+              <property name="text">
+               <string>Unité</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="unitLineEdit"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="refreshFactorLabel">
+              <property name="text">
+               <string>Facteur de raffraîchissement</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QSpinBox" name="refreshFactorLineEdit"/>
             </item>
            </layout>
           </item>
