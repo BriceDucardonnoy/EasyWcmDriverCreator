@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
-    <height>970</height>
+    <width>1267</width>
+    <height>1044</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Easy WCM Driver Creator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/icons/icon</normaloff>:/icons/icon</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -503,6 +507,13 @@
          </layout>
         </widget>
        </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QPushButton" name="previewButton">
+         <property name="text">
+          <string>Prévisualiser</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
@@ -526,7 +537,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1145</width>
+     <width>1267</width>
      <height>25</height>
     </rect>
    </property>
@@ -602,6 +613,8 @@
   <tabstop>refreshFactorLineEdit</tabstop>
   <tabstop>mibTreeView</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

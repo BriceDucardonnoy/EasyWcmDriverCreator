@@ -15,8 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->centralWidget->addActions(ui->menu_Menu->actions());
 
     // TODO BDY: remove the following code
-    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
-//    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
+//    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
+    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
+    adjustSize();
 }
 
 MainWindow::~MainWindow()

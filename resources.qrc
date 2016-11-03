@@ -9,5 +9,6 @@
         <file alias="enum">icons/enum.png</file>
         <file alias="text">icons/text.png</file>
         <file alias="table">icons/table.png</file>
+        <file alias="icon">icons/EasyWCMDriver.png</file>
     </qresource>
 </RCC>
