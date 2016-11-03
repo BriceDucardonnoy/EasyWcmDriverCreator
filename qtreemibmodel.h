@@ -28,6 +28,9 @@ public:
     QMibItem *getMibNodeFromIndex(const QModelIndex &index);
     QString getModuleName() const;
 
+    QString getVendor() const;
+    void setVendor(const QString &value);
+
 protected:
     /**
      * @brief TreeMibModel::createModel Recursive method to create the tree model
@@ -44,6 +47,7 @@ private:
     QMibItem *moduleIdentity;
     QString moduleIdentityParentName;
     QString moduleName;
+    QString vendor;
 };
 
 #endif // TREEMIBMODEL_H

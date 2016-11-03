@@ -38,7 +38,7 @@ public:
     const QList<QStandardItem *> getItems();
     const QList<QStandardItem *> createOrUpdateItems();
 
-    enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString};
+    enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString, Sequence, Entry};
 //    Q_ENUM(Type)
 
     AsnBasicType getAsnBasicType() const;
@@ -50,6 +50,9 @@ public:
     void setParent(QMibItem *value);
     void setCheckStateRecursive(Qt::CheckState state);
     Qt::CheckState getCheckState();
+    QString getUnit() const;
+    void setUnit(const QString &value);
+
 protected:
     void updateStateAscending();
 
@@ -65,6 +68,7 @@ private:
     int min;
     int max;// FIXME BDY: can be s32, or u32
     QString description;
+    QString unit;
     QList<QStandardItem *> rowItems;
     QList<QMibItem*> children;
     QMibItem* parent;

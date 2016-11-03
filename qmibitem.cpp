@@ -16,7 +16,7 @@ QMibItem::~QMibItem()
 }
 
 QMibItem::QMibItem(QString name, QString oid)
-    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), parent(NULL)
+    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), parent(NULL)
 {
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
@@ -74,8 +74,15 @@ const QList<QStandardItem *> QMibItem::createOrUpdateItems()
     }
     else
     {
-        icon.addFile(":/icons/folder_closed");
-        icon.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
+        if(type == Sequence)
+        {
+            icon.addFile(":/icons/table");
+        }
+        else
+        {
+            icon.addFile(":/icons/folder_closed");
+            icon.addFile(":/icons/folder_open", QSize(), QIcon::Normal, QIcon::On);
+        }
     }
     first->setIcon(icon);
 
@@ -116,6 +123,16 @@ void QMibItem::updateStateAscending()
     {
         parent->updateStateAscending();
     }
+}
+
+QString QMibItem::getUnit() const
+{
+    return unit;
+}
+
+void QMibItem::setUnit(const QString &value)
+{
+    unit = value;
 }
 
 void QMibItem::setCheckStateRecursive(Qt::CheckState state)

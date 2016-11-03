@@ -10,21 +10,8 @@ QTreeMibModel::QTreeMibModel(QObject *parent)
     moduleIdentity = new QMibItem();
 }
 
-QTreeMibModel::~QTreeMibModel()
-{
-    if(root != NULL)
-    {
-        delete(root);
-        root = NULL;
-    }
-    if(moduleIdentity != NULL)
-    {
-        delete(moduleIdentity);
-        moduleIdentity = NULL;
-    }
-}
-
 QTreeMibModel::QTreeMibModel(QString mibfile)
+    : moduleName(""), vendor("")
 {
     moduleIdentity = new QMibItem();
     QFile file(mibfile);
@@ -39,6 +26,20 @@ QTreeMibModel::QTreeMibModel(QString mibfile)
     createModel(&file);
 
     file.close();
+}
+
+QTreeMibModel::~QTreeMibModel()
+{
+    if(root != NULL)
+    {
+        delete(root);
+        root = NULL;
+    }
+    if(moduleIdentity != NULL)
+    {
+        delete(moduleIdentity);
+        moduleIdentity = NULL;
+    }
 }
 
 bool QTreeMibModel::createModel(QFile *mibfile)
@@ -70,6 +71,16 @@ void QTreeMibModel::checkItemStates(QStandardItem *item)
         node->setCheckStateRecursive(item->checkState());
         connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
     }
+}
+
+QString QTreeMibModel::getVendor() const
+{
+    return vendor;
+}
+
+void QTreeMibModel::setVendor(const QString &value)
+{
+    vendor = value;
 }
 
 QString QTreeMibModel::getModuleName() const
@@ -159,6 +170,11 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 child->setOid(parent->getOid() + "." + lineData[1]);
                 parent->addChild(child);
                 parent->createOrUpdateItems();
+                if(parent->getName().compare("enterprises", Qt::CaseInsensitive) == 0)
+                {
+                    vendor = child->getName();
+                    vendor[0] = vendor[0].toUpper();
+                }
 //                qInfo() << "Node " << child->toString() << " with parent " << parent->toString();
                 if(child->getName().compare(moduleIdentityParentName) == 0)
                 {
@@ -182,7 +198,11 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         }
         else if(nodeFound && line.contains("SYNTAX", Qt::CaseInsensitive))
         {
-            if(line.contains("Gauge32", Qt::CaseInsensitive))
+            if(parent->getAsnBasicType() == QMibItem::Sequence)
+            {
+                child->setAsnBasicType(QMibItem::Entry);
+            }
+            else if(line.contains("Gauge32", Qt::CaseInsensitive))
             {
                 child->setAsnBasicType(QMibItem::Gauge);
                 if(line.contains("("))
@@ -212,7 +232,10 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                     child->setMax(lineData[1].toInt());
                 }
             }
-            else if(line.contains("Integer", Qt::CaseInsensitive)) child->setAsnBasicType(QMibItem::EnumInt);
+            else if(line.contains("Integer", Qt::CaseInsensitive))
+            {
+                child->setAsnBasicType(QMibItem::EnumInt);
+            }
             else if(line.contains("DisplayString", Qt::CaseInsensitive))
             {
                 child->setAsnBasicType(QMibItem::OctetString);
@@ -224,6 +247,10 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                     child->setMax(lineData[1].toInt());
                 }
             }
+            else if(line.contains("SEQUENCE OF", Qt::CaseInsensitive))
+            {
+                child->setAsnBasicType(QMibItem::Sequence);
+            }
         }
         else if(nodeFound && line.contains("MAX-ACCESS", Qt::CaseInsensitive))
         {
@@ -232,6 +259,10 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         else if(nodeFound && line.contains("STATUS", Qt::CaseInsensitive))
         {
             child->setIsCurrent(line.trimmed().split(" ", QString::SkipEmptyParts)[1].compare("obsolete", Qt::CaseInsensitive) != 0);
+        }
+        else if(nodeFound && line.contains("UNITS", Qt::CaseInsensitive))
+        {
+            child->setUnit(line.trimmed().remove("\"").split(" ", QString::SkipEmptyParts)[1]);
         }
         else if(nodeFound && line.contains("DESCRIPTION", Qt::CaseInsensitive))
         {

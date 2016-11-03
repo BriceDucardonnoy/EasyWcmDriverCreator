@@ -8,5 +8,6 @@
         <file alias="gauge">icons/gauge.png</file>
         <file alias="enum">icons/enum.png</file>
         <file alias="text">icons/text.png</file>
+        <file alias="table">icons/table.png</file>
     </qresource>
 </RCC>

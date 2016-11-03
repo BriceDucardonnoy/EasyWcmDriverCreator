@@ -39,6 +39,7 @@ void MainWindow::loadMib(QString mibPath)
     connect(ui->mibTreeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectedLineChanged(QItemSelection,QItemSelection)));
     ui->driverNameLineEdit->setText(tmm->getModuleName());
     ui->refreshRateSpinBox->setValue(15);
+    ui->vendorLineEdit->setText(tmm->getVendor());
     on_measureCheckBox_stateChanged(ui->measureCheckBox->isChecked() == true);
     QApplication::restoreOverrideCursor();
 }
@@ -48,7 +49,6 @@ void MainWindow::on_action_Charger_une_MIB_triggered()
     qDebug("Load MIB");
     QString filename = QFileDialog::getOpenFileName(this, tr("Choisir une MIB"), /*""*/ QDir::homePath(), tr("MIB file (*.txt *.mib)"));
     qInfo() << "Filename is " << filename;
-//    ui->mibTreeView->
     loadMib(filename);
 }
 
@@ -79,17 +79,50 @@ void MainWindow::populateRightPane(QMibItem *node)
         return;
     }
     qInfo() << node->toString();
+    /*
+     * Populate
+     */
     ui->widgets->findChild<QCheckBox *>("inMIBCheckBox")->setChecked(true);
     ui->widgets->findChild<QCheckBox *>("measureCheckBox")->setChecked(node->getAsnBasicType() == QMibItem::Gauge);
-    QLineEdit *name = ui->widgets->findChild<QLineEdit *>("nameLineEdit");
-    if(name != NULL)
+    // Name
+    QLineEdit *lineEdit = ui->widgets->findChild<QLineEdit *>("nameLineEdit");
+    if(lineEdit != NULL)
     {
-        name->setText(node->getName());
+        lineEdit->setText(node->getName());
     }
-    QLineEdit *oid = ui->widgets->findChild<QLineEdit *>("oidLineEdit");
-    if(oid != NULL)
+    // OID
+    lineEdit = ui->widgets->findChild<QLineEdit *>("oidLineEdit");
+    if(lineEdit != NULL)
     {
-        oid->setText(node->getOid());
+        lineEdit->setText(node->getOid());
+    }
+    // Type
+    QComboBox *cbox = ui->identifierWidgets->findChild<QComboBox *>("typeComboBox");
+    if(cbox != NULL)
+    {
+        // TODO BDY
+    }
+    // Min
+    QSpinBox *spinBox = ui->widgets->findChild<QSpinBox *>("minSpinBox");
+    if(spinBox != NULL)
+    {
+        spinBox->setValue(node->getMin());
+        spinBox->setMinimum(node->getMin());
+        spinBox->setMaximum(node->getMax());
+    }
+    // Max
+    spinBox = ui->widgets->findChild<QSpinBox *>("maxSpinBox");
+    if(spinBox != NULL)
+    {
+        spinBox->setValue(node->getMax());
+        spinBox->setMinimum(node->getMin());
+        spinBox->setMaximum(node->getMax());
+    }
+    // Units
+    lineEdit = ui->widgets->findChild<QLineEdit *>("unitLineEdit");
+    if(lineEdit != NULL)
+    {
+        lineEdit->setText(node->getUnit());
     }
 }
 
