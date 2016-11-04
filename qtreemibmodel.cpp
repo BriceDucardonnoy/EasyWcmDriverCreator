@@ -104,7 +104,12 @@ QString QTreeMibModel::getModuleName() const
 QMibItem *QTreeMibModel::getMibNodeFromIndex(const QModelIndex &index)
 {
     QStandardItem *item = itemFromIndex(index);
-    if(item == NULL) return NULL;
+    if(item == NULL)
+    {
+        qWarning() << "ITEM NULL";
+        return NULL;
+    }
+    qInfo() << "Look for item" << item->text();
     return root->findChildByName(item->text());
 }
 
@@ -218,6 +223,8 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
                     child->setMin(lineData[0].toInt());
                     child->setMax(lineData[1].toInt());
+                    child->setWcsMin(lineData[0].toInt());
+                    child->setWcsMax(lineData[1].toInt());
                 }
             }
             else if(line.contains("Integer32", Qt::CaseInsensitive))
@@ -228,6 +235,8 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
                     child->setMin(lineData[0].toInt());
                     child->setMax(lineData[1].toInt());
+                    child->setWcsMin(lineData[0].toInt());
+                    child->setWcsMax(lineData[1].toInt());
                 }
             }
             else if(line.contains("Unsigned32", Qt::CaseInsensitive))
@@ -238,6 +247,8 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                     QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
                     child->setMin(lineData[0].toInt());
                     child->setMax(lineData[1].toInt());
+                    child->setWcsMin(lineData[0].toInt());
+                    child->setWcsMax(lineData[1].toInt());
                 }
             }
             else if(line.contains("Integer", Qt::CaseInsensitive))
@@ -253,6 +264,8 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                                                     line.indexOf("))") - line.indexOf("SIZE(") - 1).trimmed().split("..");
                     child->setMin(lineData[0].toInt());
                     child->setMax(lineData[1].toInt());
+                    child->setWcsMin(lineData[0].toInt());
+                    child->setWcsMax(lineData[1].toInt());
                 }
             }
             else if(line.contains("SEQUENCE OF", Qt::CaseInsensitive))

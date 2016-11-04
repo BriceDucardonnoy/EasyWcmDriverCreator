@@ -60,7 +60,7 @@ void MainWindow::selectedLineChanged(QItemSelection selected, QItemSelection des
 {
     if(!deselected.isEmpty())
     {
-        saveNodeUpdates(model->getMibNodeFromIndex(selected.indexes().first()));
+        saveNodeUpdates(model->getMibNodeFromIndex(deselected.indexes().first()));
     }// To remove unused warning
     if(selected.isEmpty())
     {
@@ -107,15 +107,26 @@ void MainWindow::populateRightPane(QMibItem *node)
 //    ui->typeComboBox->
     // TODO BDY
     // Min
-    ui->minSpinBox->setValue(node->getMin());
+    ui->minSpinBox->setValue(node->getWcsMin());
     ui->minSpinBox->setMinimum(node->getMin());
     ui->minSpinBox->setMaximum(node->getMax());
     // Max
-    ui->maxSpinBox->setValue(node->getMax());
+    ui->maxSpinBox->setValue(node->getWcsMax());
     ui->maxSpinBox->setMinimum(node->getMin());
     ui->maxSpinBox->setMaximum(node->getMax());
     // Units
     ui->unitLineEdit->setText(node->getUnit());
+    // Tr
+    ui->frLineEdit->setText(node->getFr());
+    ui->enLineEdit->setText(node->getEn());
+    ui->esLineEdit->setText(node->getEs());
+    // Wcs Type
+    ui->typeComboBox->setCurrentIndex(2);
+    // Operator
+    // Expected value
+    // Factor
+    // Accuracy
+    // Refresh rate
 }
 
 void MainWindow::saveNodeUpdates(QMibItem *node)
@@ -124,26 +135,24 @@ void MainWindow::saveNodeUpdates(QMibItem *node)
     {
         return;
     }
-    if(true) return;
     node->setWcsType(ui->measureCheckBox->isChecked() ? QMibItem::IdentifierReading : QMibItem::Identifier);
     node->setMib(ui->inMIBCheckBox->isChecked() ? model->getModuleName() : "EmptyMib");
     // Name
-    ui->nameLineEdit->setText(node->getName());
+    node->setNameAndItem(ui->nameLineEdit->text());
     // OID
-    ui->oidLineEdit->setText(node->getOid());
+//    node->setOid(ui->oidLineEdit->text());
     // Type
 //    ui->typeComboBox->
-    // TODO BDY
     // Min
-    ui->minSpinBox->setValue(node->getMin());
-    ui->minSpinBox->setMinimum(node->getMin());
-    ui->minSpinBox->setMaximum(node->getMax());
+    node->setWcsMin(ui->minSpinBox->value());// WARN
     // Max
-    ui->maxSpinBox->setValue(node->getMax());
-    ui->maxSpinBox->setMinimum(node->getMin());
-    ui->maxSpinBox->setMaximum(node->getMax());
+    node->setWcsMax(ui->maxSpinBox->value());// WARN
     // Units
-    ui->unitLineEdit->setText(node->getUnit());
+    node->setUnit(ui->unitLineEdit->text());
+    // Tr
+    node->setFr(ui->frLineEdit->text());
+    node->setEn(ui->enLineEdit->text());
+    node->setEs(ui->esLineEdit->text());
 }
 
 void MainWindow::on_measureCheckBox_stateChanged(int arg1)

@@ -126,6 +126,56 @@ void QMibItem::updateStateAscending()
     }
 }
 
+int QMibItem::getWcsMax() const
+{
+    return wcsMax;
+}
+
+void QMibItem::setWcsMax(int value)
+{
+    wcsMax = value;
+}
+
+int QMibItem::getWcsMin() const
+{
+    return wcsMin;
+}
+
+void QMibItem::setWcsMin(int value)
+{
+    wcsMin = value;
+}
+
+QString QMibItem::getEn() const
+{
+    return en;
+}
+
+void QMibItem::setEn(const QString &value)
+{
+    en = value;
+}
+
+QString QMibItem::getFr() const
+{
+    return fr;
+}
+
+void QMibItem::setFr(const QString &value)
+{
+    fr = value;
+}
+
+QString QMibItem::getEs() const
+{
+    return es;
+}
+
+void QMibItem::setEs(const QString &value)
+{
+    es = value;
+}
+
 QString QMibItem::getMib() const
 {
     return mib;
@@ -323,6 +373,12 @@ QString QMibItem::getName() const
 void QMibItem::setName(const QString &value)
 {
     name = value;
+}
+
+void QMibItem::setNameAndItem(const QString &value)
+{
+    setName(value);
+    rowItems[0]->setText(value);
 }
 
 bool QMibItem::getIsLeaf() const

@@ -13,6 +13,7 @@ public:
 
     QString getName() const;
     void setName(const QString &value);
+    void setNameAndItem(const QString &value);
 
     bool getIsLeaf() const;
     void setIsLeaf(bool value);
@@ -80,6 +81,21 @@ public:
     QString getMib() const;
     void setMib(const QString &value);
 
+    QString getEs() const;
+    void setEs(const QString &value);
+
+    QString getFr() const;
+    void setFr(const QString &value);
+
+    QString getEn() const;
+    void setEn(const QString &value);
+
+    int getWcsMin() const;
+    void setWcsMin(int value);
+
+    int getWcsMax() const;
+    void setWcsMax(int value);
+
 protected:
     void updateStateAscending();
 
@@ -105,6 +121,7 @@ private:
     QString mib;
     QString expectedValue;
     QString fr, en, es;
+    int wcsMin, wcsMax;
     QList<QStandardItem *> rowItems;
     QList<QMibItem*> children;
     QMibItem* parent;
