@@ -105,13 +105,13 @@ void MainWindow::populateRightPane(QMibItem *node)
     // OID
     ui->oidLineEdit->setText(node->getOid());
     // Min
-    ui->minSpinBox->setValue(node->getWcsMin());
     ui->minSpinBox->setMinimum(node->getMin());
     ui->minSpinBox->setMaximum(node->getMax());
+    ui->minSpinBox->setValue(node->getWcsMin());
     // Max
-    ui->maxSpinBox->setValue(node->getWcsMax());
     ui->maxSpinBox->setMinimum(node->getMin());
     ui->maxSpinBox->setMaximum(node->getMax());
+    ui->maxSpinBox->setValue(node->getWcsMax());
     // Units
     ui->unitLineEdit->setText(node->getUnit());
     // Tr
@@ -147,9 +147,9 @@ void MainWindow::saveNodeUpdates(QMibItem *node)
     // Type
 //    ui->typeComboBox->
     // Min
-    node->setWcsMin(ui->minSpinBox->value());// WARN
+    node->setWcsMin(ui->minSpinBox->value());
     // Max
-    node->setWcsMax(ui->maxSpinBox->value());// WARN
+    node->setWcsMax(ui->maxSpinBox->value());
     // Units
     node->setUnit(ui->unitLineEdit->text());
     // Tr
