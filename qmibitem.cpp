@@ -16,7 +16,8 @@ QMibItem::~QMibItem()
 }
 
 QMibItem::QMibItem(QString name, QString oid)
-    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), parent(NULL)
+    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), factor(1), wcsType(QMibItem::Unset), mib(""), expectedValue(""),
+      fr(""), en(""), es(""), parent(NULL)
 {
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
@@ -125,6 +126,110 @@ void QMibItem::updateStateAscending()
     }
 }
 
+QString QMibItem::getMib() const
+{
+    return mib;
+}
+
+void QMibItem::setMib(const QString &value)
+{
+    mib = value;
+}
+
+QMibItem::WcsType QMibItem::getWcsType() const
+{
+    return wcsType;
+}
+
+void QMibItem::setWcsType(const WcsType &value)
+{
+    wcsType = value;
+}
+
+QString QMibItem::getExpectedValue() const
+{
+    return expectedValue;
+}
+
+void QMibItem::setExpectedValue(const QString &value)
+{
+    expectedValue = value;
+}
+
+QList<QMibItem *> QMibItem::getCheckedNodes()
+{
+    QList<QMibItem *> checkedNodes;
+    foreach(QMibItem *child, children)
+    {
+        if(child->isLeaf)
+        {
+            if(child->getCheckState() == Qt::Checked)
+            {
+                checkedNodes.append(child);
+            }
+        }
+        else
+        {
+            if(child->getCheckState() != Qt::Unchecked)
+            {
+                checkedNodes.append(child->getCheckedNodes());
+            }
+        }
+    }
+
+    return checkedNodes;
+}
+
+int QMibItem::getStrOperator() const
+{
+    return strOperator;
+}
+
+void QMibItem::setStrOperator(int value)
+{
+    strOperator = value;
+}
+
+int QMibItem::getPrecision() const
+{
+    return precision;
+}
+
+void QMibItem::setPrecision(int value)
+{
+    precision = value;
+}
+
+double QMibItem::getFactor() const
+{
+    return factor;
+}
+
+void QMibItem::setFactor(double value)
+{
+    factor = value;
+}
+
+int QMibItem::getRefreshFactor() const
+{
+    return refreshFactor;
+}
+
+void QMibItem::setRefreshFactor(int value)
+{
+    refreshFactor = value;
+}
+
+QString QMibItem::getAttribute() const
+{
+    return attribute;
+}
+
+void QMibItem::setAttribute(const QString &value)
+{
+    attribute = value;
+}
+
 QString QMibItem::getUnit() const
 {
     return unit;
@@ -205,7 +310,7 @@ QString QMibItem::toString() const
     return getOid() + "->" + getName()
             + (isLeaf ?
                 ("[" + QString::number(getMin()) + "," + QString::number(getMax())
-                + "] read-only: " + QString::number(getIsReadOnly()) + " current: " + QString::number(getIsCurrent())
+                + "] read-only: " + QString::number(isReadOnly) + " current: " + QString::number(isCurrent)
                 + " ASN type: " + QString::number(getAsnBasicType()))
             : "");
 }

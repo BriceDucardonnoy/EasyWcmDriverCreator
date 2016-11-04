@@ -31,6 +31,8 @@ public:
     QString getVendor() const;
     void setVendor(const QString &value);
 
+    QList<QMibItem *> getCheckedItem(void);
+
 protected:
     /**
      * @brief TreeMibModel::createModel Recursive method to create the tree model

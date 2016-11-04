@@ -280,45 +280,75 @@
          <item row="3" column="1">
           <widget class="QLineEdit" name="nameLineEdit"/>
          </item>
-         <item row="4" column="0">
+         <item row="7" column="0">
           <widget class="QLabel" name="oidLabel">
            <property name="text">
             <string>OID</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="7" column="1">
           <widget class="QLineEdit" name="oidLineEdit"/>
          </item>
-         <item row="5" column="1">
-          <widget class="QSpinBox" name="minSpinBox"/>
-         </item>
-         <item row="7" column="1">
-          <widget class="QSpinBox" name="maxSpinBox"/>
-         </item>
-         <item row="5" column="0">
+         <item row="8" column="0">
           <widget class="QLabel" name="minLabel">
            <property name="text">
             <string>Min</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="8" column="1">
+          <widget class="QSpinBox" name="minSpinBox"/>
+         </item>
+         <item row="10" column="0">
           <widget class="QLabel" name="maxLabel">
            <property name="text">
             <string>Max</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="10" column="1">
+          <widget class="QSpinBox" name="maxSpinBox"/>
+         </item>
+         <item row="11" column="0">
           <widget class="QLabel" name="unitLabel">
            <property name="text">
             <string>Unité</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="1">
+         <item row="11" column="1">
           <widget class="QLineEdit" name="unitLineEdit"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="frLabel">
+           <property name="text">
+            <string>Fr</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="frLineEdit"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="enLabel">
+           <property name="text">
+            <string>En</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="enLineEdit"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="esLabel">
+           <property name="text">
+            <string>Es</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="esLineEdit"/>
          </item>
         </layout>
        </item>
@@ -505,13 +535,6 @@
            </layout>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QPushButton" name="previewButton">
-         <property name="text">
-          <string>Prévisualiser</string>
-         </property>
         </widget>
        </item>
        <item>
