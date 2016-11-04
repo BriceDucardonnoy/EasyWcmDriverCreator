@@ -109,7 +109,6 @@ QMibItem *QTreeMibModel::getMibNodeFromIndex(const QModelIndex &index)
         qWarning() << "ITEM NULL";
         return NULL;
     }
-    qInfo() << "Look for item" << item->text();
     return root->findChildByName(item->text());
 }
 

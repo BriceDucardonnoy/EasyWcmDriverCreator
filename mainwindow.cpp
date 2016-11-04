@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->identifierReadingWidgets->hide();
     ui->identifierWidgets->hide();
     // TODO BDY: remove the following code
-//    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
+    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
 //    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
     adjustSize();
 }
@@ -104,9 +104,6 @@ void MainWindow::populateRightPane(QMibItem *node)
     ui->nameLineEdit->setText(node->getName());
     // OID
     ui->oidLineEdit->setText(node->getOid());
-    // Type
-//    ui->typeComboBox->
-    // TODO BDY
     // Min
     ui->minSpinBox->setValue(node->getWcsMin());
     ui->minSpinBox->setMinimum(node->getMin());
@@ -122,12 +119,17 @@ void MainWindow::populateRightPane(QMibItem *node)
     ui->enLineEdit->setText(node->getEn());
     ui->esLineEdit->setText(node->getEs());
     // Wcs Type
-    ui->typeComboBox->setCurrentIndex(2);
+    ui->typeComboBox->setCurrentIndex(node->getIdentifierType());
     // Operator
+    ui->operatorComboBox->setCurrentIndex(node->getStrOperator());
     // Expected value
+    ui->expectedValueLineEdit->setText(node->getExpectedValue());
     // Factor
+    ui->factorLineEdit->setValue(node->getFactor());
     // Accuracy
+    ui->precisionLineEdit->setValue(node->getPrecision());
     // Refresh rate
+    ui->refreshFactorLineEdit->setValue(node->getRefreshFactor());
 }
 
 void MainWindow::saveNodeUpdates(QMibItem *node)
@@ -154,6 +156,18 @@ void MainWindow::saveNodeUpdates(QMibItem *node)
     node->setFr(ui->frLineEdit->text());
     node->setEn(ui->enLineEdit->text());
     node->setEs(ui->esLineEdit->text());
+    // Wcs Type
+    node->setIdentifierType(ui->typeComboBox->currentIndex());
+    // Operator
+    node->setStrOperator(ui->operatorComboBox->currentIndex());
+    // Expected value
+    node->setExpectedValue(ui->expectedValueLineEdit->text());
+    // Factor
+    node->setFactor(ui->factorLineEdit->value());
+    // Accuracy
+    node->setPrecision(ui->precisionLineEdit->value());
+    // Refresh rate
+    node->setRefreshFactor(ui->refreshFactorLineEdit->value());
 }
 
 void MainWindow::on_measureCheckBox_stateChanged(int arg1)

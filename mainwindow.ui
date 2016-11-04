@@ -71,7 +71,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-424</y>
          <width>443</width>
          <height>1065</height>
         </rect>
@@ -330,7 +330,11 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QLineEdit" name="oidLineEdit"/>
+           <widget class="QLineEdit" name="oidLineEdit">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="8" column="0">
            <widget class="QLabel" name="minLabel">
@@ -547,9 +551,6 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QSpinBox" name="factorLineEdit"/>
-             </item>
              <item row="3" column="0">
               <widget class="QLabel" name="precisionLabel">
                <property name="text">
@@ -571,6 +572,19 @@
               <widget class="QSpinBox" name="refreshFactorLineEdit">
                <property name="value">
                 <number>4</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="factorLineEdit">
+               <property name="decimals">
+                <number>8</number>
+               </property>
+               <property name="minimum">
+                <double>-100.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
                </property>
               </widget>
              </item>

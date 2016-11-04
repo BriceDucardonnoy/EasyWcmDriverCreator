@@ -42,6 +42,7 @@ public:
     enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString, Sequence, Entry};
 //    Q_ENUM(Type)
     enum WcsType {Unset, Identifier, IdentifierGroup, IdentifierReading};
+//    enum IdentifierType {Discover, Alarm, Warning, Info, Text, Reading};
 
     AsnBasicType getAsnBasicType() const;
     void setAsnBasicType(const AsnBasicType &value);
@@ -96,6 +97,9 @@ public:
     int getWcsMax() const;
     void setWcsMax(int value);
 
+    int getIdentifierType() const;
+    void setIdentifierType(int value);
+
 protected:
     void updateStateAscending();
 
@@ -116,6 +120,7 @@ private:
     int refreshFactor;
     double factor;
     int precision;
+    int identifierType;
     int strOperator;
     WcsType wcsType;
     QString mib;

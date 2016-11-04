@@ -16,8 +16,8 @@ QMibItem::~QMibItem()
 }
 
 QMibItem::QMibItem(QString name, QString oid)
-    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), factor(1), wcsType(QMibItem::Unset), mib(""), expectedValue(""),
-      fr(""), en(""), es(""), parent(NULL)
+    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), refreshFactor(4), factor(1), precision(1), identifierType(0),
+      strOperator(0), wcsType(QMibItem::Unset), mib(""), expectedValue(""), fr(""), en(""), es(""), parent(NULL)
 {
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
@@ -124,6 +124,16 @@ void QMibItem::updateStateAscending()
     {
         parent->updateStateAscending();
     }
+}
+
+int QMibItem::getIdentifierType() const
+{
+    return identifierType;
+}
+
+void QMibItem::setIdentifierType(int value)
+{
+    identifierType = value;
 }
 
 int QMibItem::getWcsMax() const
