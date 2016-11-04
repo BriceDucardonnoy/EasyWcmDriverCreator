@@ -11,9 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //    connect(ui->action_Charger_une_MIB,SIGNAL(triggered(bool)),this,SLOT(on_action_Charger_une_MIB_triggered()));
     ui->centralWidget->addActions(ui->menu_Menu->actions());
-
+    ui->identifierReadingWidgets->hide();
+    ui->identifierWidgets->hide();
     // TODO BDY: remove the following code
-    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
+//    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
 //    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
     adjustSize();
 }
