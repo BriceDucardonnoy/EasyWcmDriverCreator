@@ -85,10 +85,8 @@ void QTreeMibModel::setVendor(const QString &value)
 
 QList<QMibItem *> QTreeMibModel::getCheckedItem()
 {
-    QList<QMibItem *> checked;
-    qInfo() << "Number of children" << root->getCheckedNodes().size();
-
-    return checked;
+//    qInfo() << "Number of children" << root->getCheckedNodes().size();
+    return root->getCheckedNodes();
 }
 
 QString QTreeMibModel::getModuleName() const

@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <qdebug.h>
 #include <QFileDialog>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -187,7 +189,49 @@ void MainWindow::on_measureCheckBox_stateChanged(int arg1)
 void MainWindow::on_action_Sauver_le_Driver_triggered()
 {
     // TODO BDY: open a file choose dialog
-    QList<QMibItem *> node2export = model->getCheckedItem();
+    QList<QMibItem *> nodes2export = model->getCheckedItem();
+    QJsonObject result, dbstring, fr, en, es, version, content, productFamilyNb, productFamily, product;
+    QJsonArray identifier, identifierReading, driver;
     QString filename = "/tmp/testDriver.json";
-    qInfo() << "Export driver" << node2export.size() << "nodes";
+    QFile dest(filename);
+
+    /*
+     *  Create JSON
+     */
+    qInfo() << "Export driver" << nodes2export.size() << "nodes";
+    // Main informations
+    version["versionNumber"] = ui->driverVersionLineEdit->text();
+    productFamily["familyName"] = ui->driverFamilyComboBox->currentText().split(":")[1].trimmed();
+    productFamily["svgPath"] = ui->svgLineEdit->text();
+    productFamilyNb[ui->driverFamilyComboBox->currentText().split(":")[0]] = productFamily;
+    content["productFamily"] = productFamilyNb;
+
+    // Children
+    foreach(QMibItem *node, nodes2export)
+    {
+        node->write(model->getModuleName(), fr, en, es);
+    }
+
+    // End
+    result["version"] = version;
+    result["dbString"] = dbstring;
+
+    // Translate strings
+    dbstring["en"] = en;
+    dbstring["fr"] = fr;
+    dbstring["es"] = es;
+    qInfo() << "JSON ready to be written";
+
+    // Write
+    if(!dest.open(QIODevice::WriteOnly))
+    {
+        qWarning("Couldn't open save file");
+        return;
+    }
+    QJsonDocument jsonFile(result);
+    if(dest.write(jsonFile.toJson()) == -1)
+    {
+        qWarning("Error while writing file");
+    }
+    dest.close();
 }

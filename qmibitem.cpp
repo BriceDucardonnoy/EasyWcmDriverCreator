@@ -16,7 +16,7 @@ QMibItem::~QMibItem()
 }
 
 QMibItem::QMibItem(QString name, QString oid)
-    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), refreshFactor(4), factor(1), precision(1), identifierType(0),
+    : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), attribute("Misc"), refreshFactor(4), factor(1), precision(1), identifierType(0),
       strOperator(0), wcsType(QMibItem::Unset), mib(""), expectedValue(""), fr(""), en(""), es(""), parent(NULL)
 {
     rowItems << new QStandardItem(name);
@@ -136,6 +136,52 @@ void QMibItem::setIdentifierType(int value)
     identifierType = value;
 }
 
+QJsonObject QMibItem::write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const
+{
+    QJsonObject me;
+    if(!isLeaf)
+    {
+        return me;// TODO BDY: return something else
+    }
+
+    me["attribute"] = attribute;
+    me["mib"] = mibName;
+    me["name"] = name;
+    me["identifier"] = oid;
+
+    fr[name] = this->fr;
+    en[name] = this->en;
+    es[name] = this->es;
+
+    if(wcsType == Identifier)
+    {
+        writeId(me);
+    }
+    else if(wcsType == IdentifierReading)
+    {
+        writeIdReading(me);
+    }
+
+    return me;
+}
+
+void QMibItem::writeId(QJsonObject &json) const
+{
+    json["type"] = identifierType;
+    json["operator"] = strOperator;
+    json["expectedValue"] = expectedValue;
+}
+
+void QMibItem::writeIdReading(QJsonObject &json) const
+{
+    json["minValue"] = wcsMin;
+    json["maxValue"] = wcsMax;
+    json["factor"] = factor;
+    json["precision"] = precision;
+    json["unit"] = unit;
+    json["refreshFactor"] = refreshFactor;
+}
+
 int QMibItem::getWcsMax() const
 {
     return wcsMax;
@@ -216,7 +262,7 @@ void QMibItem::setExpectedValue(const QString &value)
     expectedValue = value;
 }
 
-QList<QMibItem *> QMibItem::getCheckedNodes()
+const QList<QMibItem *> QMibItem::getCheckedNodes() const
 {
     QList<QMibItem *> checkedNodes;
     foreach(QMibItem *child, children)
@@ -361,7 +407,7 @@ void QMibItem::setIsCurrent(bool value)
     isCurrent = value;
 }
 
-const QList<QStandardItem *> QMibItem::getItems() {
+const QList<QStandardItem *> QMibItem::getItems() const {
     return rowItems;
 }
 

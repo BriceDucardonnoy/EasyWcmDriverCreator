@@ -1,8 +1,9 @@
 #ifndef MIBITEM_H
 #define MIBITEM_H
 
-#include <qlist.h>
+#include <QList>
 #include <QStandardItem>
+#include <QJsonObject>
 
 class QMibItem : public QObject//, public QStandardItem
 {
@@ -11,6 +12,21 @@ public:
     ~QMibItem();
     QMibItem(QString name = "enterprises", QString oid = ".1.3.6.1.4.1");
 
+    enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString, Sequence, Entry};
+//    Q_ENUM(Type)
+    enum WcsType {Unset, Identifier, IdentifierGroup, IdentifierReading};
+//    enum IdentifierType {Discover, Alarm, Warning, Info, Text, Reading};
+
+    void addChild(QMibItem *child);
+    QString toString() const;
+    const QList<QStandardItem *> getItems() const;
+    const QList<QStandardItem *> createOrUpdateItems();
+    const QList<QMibItem *> getCheckedNodes(void) const;
+    QMibItem *findChildByName(const QString &);
+    void setCheckStateRecursive(Qt::CheckState state);
+    Qt::CheckState getCheckState(void);
+
+    /* Getters and setters */
     QString getName() const;
     void setName(const QString &value);
     void setNameAndItem(const QString &value);
@@ -33,26 +49,15 @@ public:
     QString getDescription() const;
     void setDescription(const QString &value);
 
-    void addChild(QMibItem *child);
-    QString toString() const;
-
-    const QList<QStandardItem *> getItems();
-    const QList<QStandardItem *> createOrUpdateItems();
-
-    enum AsnBasicType {Leaf, Trap, /*Group, */EnumInt, S32, U32, Gauge, OctetString, Sequence, Entry};
-//    Q_ENUM(Type)
-    enum WcsType {Unset, Identifier, IdentifierGroup, IdentifierReading};
-//    enum IdentifierType {Discover, Alarm, Warning, Info, Text, Reading};
-
     AsnBasicType getAsnBasicType() const;
     void setAsnBasicType(const AsnBasicType &value);
+
     bool getIsCurrent() const;
     void setIsCurrent(bool value);
-    QMibItem *findChildByName(const QString &);
+
     QMibItem *getParent() const;
     void setParent(QMibItem *value);
-    void setCheckStateRecursive(Qt::CheckState state);
-    Qt::CheckState getCheckState();
+
     QString getUnit() const;
     void setUnit(const QString &value);
 
@@ -73,8 +78,6 @@ public:
 
     QString getExpectedValue() const;
     void setExpectedValue(const QString &value);
-
-    QList<QMibItem *> getCheckedNodes(void);
 
     WcsType getWcsType() const;
     void setWcsType(const WcsType &value);
@@ -100,8 +103,15 @@ public:
     int getIdentifierType() const;
     void setIdentifierType(int value);
 
+    /* JSON method(s) */
+    QJsonObject write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const;
+
 protected:
     void updateStateAscending();
+
+     /* JSON method(s) */
+    void writeId(QJsonObject &) const;
+    void writeIdReading(QJsonObject &) const;
 
 public slots:
 
