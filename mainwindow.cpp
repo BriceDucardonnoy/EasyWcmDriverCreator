@@ -191,7 +191,7 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     // TODO BDY: open a file choose dialog
     QList<QMibItem *> nodes2export = model->getCheckedItem();
     QJsonObject result, dbstring, fr, en, es, version, content, productFamilyNb, productFamily, product;
-    QJsonArray identifier, identifierReading, driver;
+    QJsonArray identifier, identifierReading, driver, productArray;
     QString filename = "/tmp/testDriver.json";
     QFile dest(filename);
 
@@ -201,25 +201,64 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     qInfo() << "Export driver" << nodes2export.size() << "nodes";
     // Main informations
     version["versionNumber"] = ui->driverVersionLineEdit->text();
-    productFamily["familyName"] = ui->driverFamilyComboBox->currentText().split(":")[1].trimmed();
-    productFamily["svgPath"] = ui->svgLineEdit->text();
-    productFamilyNb[ui->driverFamilyComboBox->currentText().split(":")[0]] = productFamily;
-    content["productFamily"] = productFamilyNb;
 
     // Children
     foreach(QMibItem *node, nodes2export)
     {
-        node->write(model->getModuleName(), fr, en, es);
+        if(node->getIsLeaf())
+        {
+            QJsonObject jsonNode = node->write(model->getModuleName(), fr, en, es);
+            switch(node->getWcsType())
+            {
+            case QMibItem::Identifier:
+                identifier.append(jsonNode);
+                break;
+            case QMibItem::IdentifierReading:
+                identifierReading.append(jsonNode);
+                break;
+            default:
+                qWarning() << "Node" << node->getName() << "not seen as identifier or identifierReading. Skip it!";
+            }
+        }
     }
+
+    // Driver
+    QJsonObject driver1;
+    driver1["version"] = ui->versionLineEdit->text();
+    driver1["protocol"] = ui->protocolComboBox->currentIndex();
+    driver1["refreshFrequency"] = ui->refreshRateSpinBox->value();
+    driver1["identifier"] = identifier;
+    driver1["identifierGroup"] = "";
+    driver1["identifierReading"] = identifierReading;
+    driver1["hasScriptEasy"] = ui->scriptEasyCheckBox->checkState() == Qt::Checked ? true : false;
+    driver1["hasFMChannel"] = ui->fmChannelCheckBox->checkState() == Qt::Checked ? true : false;
+    driver1["lien"] = ui->urlLineEdit->text();
+    driver.append(driver1);
+
+    // Product
+    product["flag"] = ui->flagSpinBox->value();
+    product["driver"] = driver;
+    product["systemName"] = ui->systemNameLineEdit->text();
+    product["systemType"] = ui->systemTypeLineEdit->text();
+    product["vendor"] = ui->vendorLineEdit->text();
+    productArray.append(product);
+    productFamily["product"] = productArray;
+    productFamily["svgPath"] = ui->svgLineEdit->text();
+    productFamily["familyName"] = ui->driverFamilyComboBox->currentText().split(":")[1].trimmed();
+//    productFamilyNb[ui->driverFamilyComboBox->currentText().split(":")[0]] = productFamily;
+    productFamilyNb[QString::number(ui->driverFamilyComboBox->currentIndex() + 1)] = productFamily;
+    content["productFamily"] = productFamilyNb;
+
+    // Translate strings
+    dbstring["es"] = es;
+    dbstring["fr"] = fr;
+    dbstring["en"] = en;
 
     // End
     result["version"] = version;
-    result["dbString"] = dbstring;
+    result["content"] = content;
+    content["dbString"] = dbstring;
 
-    // Translate strings
-    dbstring["en"] = en;
-    dbstring["fr"] = fr;
-    dbstring["es"] = es;
     qInfo() << "JSON ready to be written";
 
     // Write
@@ -234,4 +273,5 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
         qWarning("Error while writing file");
     }
     dest.close();
+    qInfo("JSON stored");
 }

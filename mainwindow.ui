@@ -93,7 +93,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="driverNameLineEdit"/>
+           <widget class="QLineEdit" name="driverNameLineEdit">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="driverVersionLabel">
@@ -103,7 +107,11 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="driverVersionLineEdit"/>
+           <widget class="QLineEdit" name="driverVersionLineEdit">
+            <property name="text">
+             <string>1.0</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="driverFamilyLabel">
@@ -202,7 +210,11 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="systemTypeLineEdit"/>
+           <widget class="QLineEdit" name="systemTypeLineEdit">
+            <property name="text">
+             <string>Un type</string>
+            </property>
+           </widget>
           </item>
           <item row="6" column="0">
            <widget class="QLabel" name="nomDuSystMeLabel">
@@ -212,7 +224,11 @@
            </widget>
           </item>
           <item row="6" column="1">
-           <widget class="QLineEdit" name="systemNameLineEdit"/>
+           <widget class="QLineEdit" name="systemNameLineEdit">
+            <property name="text">
+             <string>un nom</string>
+            </property>
+           </widget>
           </item>
           <item row="7" column="0">
            <widget class="QLabel" name="flagLabel">
@@ -246,7 +262,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="versionLineEdit"/>
+           <widget class="QLineEdit" name="versionLineEdit">
+            <property name="text">
+             <string>Generic</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="protocolLabel">

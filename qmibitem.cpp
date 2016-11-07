@@ -55,17 +55,21 @@ const QList<QStandardItem *> QMibItem::createOrUpdateItems()
                 break;
             case Gauge:
                 icon.addFile(":/icons/gauge");
+                setWcsType(QMibItem::IdentifierReading);
                 break;
             case U32:
             case S32:
             case EnumInt:
                 icon.addFile(":/icons/enum");
+                setWcsType(QMibItem::Identifier);
                 break;
             case OctetString:
                 icon.addFile(":/icons/text");
+                setWcsType(QMibItem::Identifier);
                 break;
             default:
                 icon.addFile(":/icons/leaf");
+                setWcsType(QMibItem::Identifier);
             }
         }
         else
@@ -139,10 +143,6 @@ void QMibItem::setIdentifierType(int value)
 QJsonObject QMibItem::write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const
 {
     QJsonObject me;
-    if(!isLeaf)
-    {
-        return me;// TODO BDY: return something else
-    }
 
     me["attribute"] = attribute;
     me["mib"] = mibName;
