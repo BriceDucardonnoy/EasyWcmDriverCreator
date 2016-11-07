@@ -71,7 +71,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-424</y>
+         <y>0</y>
          <width>443</width>
          <height>1065</height>
         </rect>
@@ -106,14 +106,73 @@
            <widget class="QLineEdit" name="driverVersionLineEdit"/>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="familleLabel">
+           <widget class="QLabel" name="driverFamilyLabel">
             <property name="text">
-             <string>Famille</string>
+             <string>Family</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="driverFamilyLineEdit"/>
+           <widget class="QComboBox" name="driverFamilyComboBox">
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>1: Undefined</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2: Production</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>3: Processing</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>4: Transport</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>5: Transmission</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>6: Signal Monitoring</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>7: Metering</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>8: Remote Control</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>9: Environment</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>10: IT Network</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>11: Other</string>
+             </property>
+            </item>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="cheminDuSVGLabel">
@@ -156,14 +215,14 @@
            <widget class="QLineEdit" name="systemNameLineEdit"/>
           </item>
           <item row="7" column="0">
-           <widget class="QLabel" name="drapeauLabel">
+           <widget class="QLabel" name="flagLabel">
             <property name="text">
-             <string>Drapeau</string>
+             <string>Flag</string>
             </property>
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QLineEdit" name="flagLineEdit"/>
+           <widget class="QSpinBox" name="flagSpinBox"/>
           </item>
          </layout>
         </item>
@@ -601,7 +660,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>6</height>
+            <height>18</height>
            </size>
           </property>
          </spacer>
@@ -666,12 +725,10 @@
  <tabstops>
   <tabstop>driverNameLineEdit</tabstop>
   <tabstop>driverVersionLineEdit</tabstop>
-  <tabstop>driverFamilyLineEdit</tabstop>
   <tabstop>svgLineEdit</tabstop>
   <tabstop>vendorLineEdit</tabstop>
   <tabstop>systemTypeLineEdit</tabstop>
   <tabstop>systemNameLineEdit</tabstop>
-  <tabstop>flagLineEdit</tabstop>
   <tabstop>versionLineEdit</tabstop>
   <tabstop>protocolComboBox</tabstop>
   <tabstop>refreshRateSpinBox</tabstop>

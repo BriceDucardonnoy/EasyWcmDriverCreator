@@ -187,6 +187,7 @@ void MainWindow::on_measureCheckBox_stateChanged(int arg1)
 void MainWindow::on_action_Sauver_le_Driver_triggered()
 {
     // TODO BDY: open a file choose dialog
+    QList<QMibItem *> node2export = model->getCheckedItem();
     QString filename = "/tmp/testDriver.json";
-    qInfo() << "Export driver" << ((QTreeMibModel *) ui->mibTreeView->model())->getCheckedItem();
+    qInfo() << "Export driver" << node2export.size() << "nodes";
 }
