@@ -77,7 +77,38 @@ void MainWindow::selectedLineChanged(QItemSelection selected, QItemSelection des
 
 void MainWindow::clearRightPane()
 {
-
+    ui->inMIBCheckBox->setChecked(false);
+    ui->measureCheckBox->setChecked(false);
+    // Name
+    ui->nameLineEdit->clear();
+    // OID
+    ui->oidLineEdit->clear();
+    // Min
+    ui->minSpinBox->setMinimum(0);
+    ui->minSpinBox->setMaximum(0);
+    ui->minSpinBox->setValue(0);
+    // Max
+    ui->maxSpinBox->setMinimum(0);
+    ui->maxSpinBox->setMaximum(0);
+    ui->maxSpinBox->setValue(0);
+    // Units
+    ui->unitLineEdit->clear();
+    // Tr
+    ui->frLineEdit->clear();
+    ui->enLineEdit->clear();
+    ui->esLineEdit->clear();
+    // Wcs Type
+    ui->typeComboBox->setCurrentIndex(0);
+    // Operator
+    ui->operatorComboBox->setCurrentIndex(0);
+    // Expected value
+    ui->expectedValueLineEdit->clear();
+    // Factor
+    ui->factorLineEdit->clear();
+    // Accuracy
+    ui->precisionLineEdit->clear();
+    // Refresh rate
+    ui->refreshFactorLineEdit->clear();
 }
 
 void MainWindow::populateRightPane(QMibItem *node)
@@ -188,11 +219,18 @@ void MainWindow::on_measureCheckBox_stateChanged(int arg1)
 
 void MainWindow::on_action_Sauver_le_Driver_triggered()
 {
-    // TODO BDY: open a file choose dialog
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choisir une destination"), /*""*/ QDir::homePath(), tr("JSON file (*.json)"));
+//    QString filename = "/tmp/testDriver.json";
+    if(filename.isEmpty())
+    {
+        qInfo() << "Store canceled.";
+        return;
+    }
+
+    ui->mibTreeView->selectionModel()->clearSelection();// To save the updates of the current item
     QList<QMibItem *> nodes2export = model->getCheckedItem();
     QJsonObject result, dbstring, fr, en, es, version, content, productFamilyNb, productFamily, product;
     QJsonArray identifier, identifierReading, driver, productArray;
-    QString filename = "/tmp/testDriver.json";
     QFile dest(filename);
 
     /*
@@ -236,11 +274,11 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     driver.append(driver1);
 
     // Product
-    product["flag"] = ui->flagSpinBox->value();
-    product["driver"] = driver;
+    product["vendor"] = ui->vendorLineEdit->text();
     product["systemName"] = ui->systemNameLineEdit->text();
     product["systemType"] = ui->systemTypeLineEdit->text();
-    product["vendor"] = ui->vendorLineEdit->text();
+    product["driver"] = driver;
+    product["flag"] = ui->flagSpinBox->value();
     productArray.append(product);
     productFamily["product"] = productArray;
     productFamily["svgPath"] = ui->svgLineEdit->text();
@@ -253,11 +291,11 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     dbstring["es"] = es;
     dbstring["fr"] = fr;
     dbstring["en"] = en;
+    content["dbString"] = dbstring;
 
     // End
     result["version"] = version;
     result["content"] = content;
-    content["dbString"] = dbstring;
 
     qInfo() << "JSON ready to be written";
 

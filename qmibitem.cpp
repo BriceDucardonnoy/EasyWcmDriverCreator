@@ -269,7 +269,7 @@ const QList<QMibItem *> QMibItem::getCheckedNodes() const
     {
         if(child->isLeaf)
         {
-            if(child->getCheckState() == Qt::Checked)
+            if(child->getCheckState() == Qt::Checked && child->isCurrent == true)// Don't add obsolete
             {
                 checkedNodes.append(child);
             }
