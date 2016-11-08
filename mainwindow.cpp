@@ -229,7 +229,7 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
 
     ui->mibTreeView->selectionModel()->clearSelection();// To save the updates of the current item
     QList<QMibItem *> nodes2export = model->getCheckedItem();
-    QJsonObject result, dbstring, fr, en, es, version, content, productFamilyNb, productFamily, product;
+    QJsonObject result, dbstring, fr, en, es, version, content, productFamilyNb, productFamily, product, vendor, vendorDetails;
     QJsonArray identifier, identifierReading, driver, productArray;
     QFile dest(filename);
 
@@ -274,7 +274,7 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     driver.append(driver1);
 
     // Product
-    product["vendor"] = ui->vendorLineEdit->text();
+    product["vendor"] = ui->vendorLineEdit->text().toLower().left(3);
     product["systemName"] = ui->systemNameLineEdit->text();
     product["systemType"] = ui->systemTypeLineEdit->text();
     product["driver"] = driver;
@@ -293,9 +293,16 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     dbstring["en"] = en;
     content["dbString"] = dbstring;
 
+    // Vendor
+    vendorDetails["vendorName"] = ui->vendorLineEdit->text();
+    vendorDetails["url"] = ui->urlLineEdit->text();
+    vendorDetails["logoPath"] = ui->svgLineEdit->text();
+    vendor[ui->vendorLineEdit->text().toLower().left(3)] = vendorDetails;
+
     // End
     result["version"] = version;
     result["content"] = content;
+    result["vendor"] = vendor;
 
     qInfo() << "JSON ready to be written";
 
