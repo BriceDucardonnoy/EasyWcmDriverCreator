@@ -176,31 +176,35 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             }
             if(line.contains(parent->getName()))
             {
+                // It contains the name of the parent but is it really the same name or does it start with the same name?
                 QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - line.indexOf("{") - 1).trimmed().split(" ");
-                child->setOid(parent->getOid() + "." + lineData[1]);
-                parent->addChild(child);
-                parent->createOrUpdateItems();
-                if(parent->getName().compare("enterprises", Qt::CaseInsensitive) == 0)
+                if(parent->getName().compare(lineData[0]) == 0)
                 {
-                    vendor = child->getName();
-                    vendor[0] = vendor[0].toUpper();
-                }
-//                qInfo() << "Node " << child->toString() << " with parent " << parent->toString();
-                if(child->getName().compare(moduleIdentityParentName) == 0)
-                {
-                    moduleIdentity->setOid(child->getOid() + "." + moduleIdentity->getOid());
-                    moduleIdentity->createOrUpdateItems();
-                    child->addChild(moduleIdentity);
-                    child->createOrUpdateItems();
-                    qint64 pos = stream->pos();
-                    createModel(stream, moduleIdentity);
-                    stream->seek(pos);
-                }
-                else
-                {
-                    qint64 pos = stream->pos();
-                    createModel(stream, child);// Stream is at end because of reference given
-                    stream->seek(pos);
+                    child->setOid(parent->getOid() + "." + lineData[1]);
+                    parent->addChild(child);
+                    parent->createOrUpdateItems();
+                    if(parent->getName().compare("enterprises", Qt::CaseInsensitive) == 0)
+                    {
+                        vendor = child->getName();
+                        vendor[0] = vendor[0].toUpper();
+                    }
+    //                qInfo() << "Node " << child->toString() << " with parent " << parent->toString();
+                    if(child->getName().compare(moduleIdentityParentName) == 0)
+                    {
+                        moduleIdentity->setOid(child->getOid() + "." + moduleIdentity->getOid());
+                        moduleIdentity->createOrUpdateItems();
+                        child->addChild(moduleIdentity);
+                        child->createOrUpdateItems();
+                        qint64 pos = stream->pos();
+                        createModel(stream, moduleIdentity);
+                        stream->seek(pos);
+                    }
+                    else
+                    {
+                        qint64 pos = stream->pos();
+                        createModel(stream, child);// Stream is at end because of reference given
+                        stream->seek(pos);
+                    }
                 }
             }
             nodeFound = false;

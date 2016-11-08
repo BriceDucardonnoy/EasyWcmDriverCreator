@@ -384,6 +384,10 @@ void QMibItem::addChild(QMibItem *child)
             << "at address" << child;
     rowItems.at(id)->appendRow(child->getItems());
     children.append(child);
+    if(child->getParent() != NULL)
+    {
+        qWarning("Parent not null");
+    }
     child->setParent(this);
 }
 
