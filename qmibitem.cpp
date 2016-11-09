@@ -5,14 +5,17 @@
 
 QMibItem::~QMibItem()
 {
-    foreach (QStandardItem *item, rowItems)
-    {
-        delete(item);
-    }
-    foreach(QMibItem *child, children)
-    {
-        delete(child);
-    }
+//    foreach (QStandardItem *item, rowItems)
+//    {
+//        delete(item);// Crash
+//    }
+    rowItems.clear();
+//    foreach(QMibItem *child, children)
+//    {
+//        delete(child);
+//        child = NULL;
+//    }
+    children.clear();
 }
 
 QMibItem::QMibItem(QString name, QString oid)
@@ -138,6 +141,11 @@ int QMibItem::getIdentifierType() const
 void QMibItem::setIdentifierType(int value)
 {
     identifierType = value;
+}
+
+const QList<QMibItem *> QMibItem::getChildren() const
+{
+    return children;
 }
 
 QJsonObject QMibItem::write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const

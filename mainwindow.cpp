@@ -15,9 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->centralWidget->addActions(ui->menu_Menu->actions());
     ui->identifierReadingWidgets->hide();
     ui->identifierWidgets->hide();
-    // TODO BDY: remove the following code
+    // Tested MIBs
 //    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
 //    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
+//    loadMib("/home/bdy/Documents/MIBs/IqoyaLink_SNMP_Mib.mib");
+//    loadMib("/home/bdy/Documents/MIBs/TSB-FM-T340X2-SINGLETRANSMITTER-MIB.mib");// Contains error. Even SNMPB can't open it.
+//    loadMib("/home/bdy/Documents/MIBs/ENENSYS-ENTERPRISE-MIB.mib");
+//    loadMib("/home/bdy/Documents/MIBs/ENENSYS-MONITOR-MIB.mib");// Depends on previous MIB
+    //
     adjustSize();
 }
 

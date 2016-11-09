@@ -103,6 +103,8 @@ public:
     int getIdentifierType() const;
     void setIdentifierType(int value);
 
+    const QList<QMibItem *> getChildren() const;
+
     /* JSON method(s) */
     QJsonObject write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const;
 

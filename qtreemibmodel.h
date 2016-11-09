@@ -19,7 +19,7 @@ public:
     ~QTreeMibModel();
 
     void createModel(QTextStream *stream, QTreeMibModel *parent);
-    void createModel(QTextStream *stream, QMibItem *parent);
+    bool createModel(QTextStream *stream, QMibItem *parent);
     /**
      * @brief QTreeMibModel::getMibNodeFromIndex Find the MibNode from its QModelIndex
      * @param index The QModelIndex
@@ -42,6 +42,8 @@ protected:
     void createModel(QTextStream *stream, const QMibItem *parent);
     bool createModel(QFile *mibfile);
     void findNode(QTextStream *stream, QTreeMibModel *parent);
+    void configureNumericChild(QMibItem *child, QString line, QString optionalPrefix = "");
+    QStringList splitWhiteSpaces(QString line);
 private slots:
     void checkItemStates(QStandardItem *);
 private:

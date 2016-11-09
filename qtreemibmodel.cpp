@@ -52,7 +52,25 @@ bool QTreeMibModel::createModel(QFile *mibfile)
     this->setHorizontalHeaderItem(2, new QStandardItem(tr("Description")));
 
     appendRow(root->getItems());
-    createModel(&in, root);
+    if(!createModel(&in, root))
+    {
+        if(moduleIdentity != NULL)
+        {
+            moduleIdentity->setOid(root->getOid() + ".???." + moduleIdentity->getOid());
+            delete(root);
+            root = moduleIdentity;
+            root->createOrUpdateItems();
+            removeRow(0);
+            appendRow(root->getItems());
+            qInfo() << "Root not found under enterprises. Retry with another root" << root->toString();
+            in.seek(0);
+            createModel(&in, root);
+        }
+        else
+        {
+            qWarning("Root not found under enterprises");
+        }
+    }
     // Bind the (un)check event
     connect(this,SIGNAL(itemChanged(QStandardItem*)),this, SLOT(checkItemStates(QStandardItem*)));
 
@@ -115,12 +133,14 @@ QMibItem *QTreeMibModel::getMibNodeFromIndex(const QModelIndex &index)
  * @param stream The QTextStream of the MIB file
  * @param parent The parent node to look children for
  */
-void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
+bool QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent)
+{
     static bool identityFound = false;
     bool nodeFound = false;
     bool endNodeReached = false;
     QMibItem *child = NULL;
     QString line;
+//    qInfo("Enter in createModel");
 
     while(!stream->atEnd())
     {
@@ -134,23 +154,23 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         // Node not found, looking for a start
         if(line.contains("DEFINITIONS") && line.contains("::=") && line.contains("BEGIN"))
         {
-            moduleName = line.split(" ", QString::SkipEmptyParts)[0];
+            moduleName = splitWhiteSpaces(line)[0];
             continue;
         }
-        else if(line.contains("MODULE-IDENTITY", Qt::CaseInsensitive) && !line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// We skip the IMPORTS line
+        else if(line.contains("MODULE-IDENTITY", Qt::CaseInsensitive) && root != moduleIdentity && !line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive))// We skip the IMPORTS line
         {
-            moduleIdentity->setName(line.split(" ", QString::SkipEmptyParts)[0]);
+            moduleIdentity->setName(splitWhiteSpaces(line)[0]);
             moduleIdentity->setOid("");
             child = moduleIdentity;
             nodeFound = true;
         }
-        else if(!nodeFound &&
+        else if(!nodeFound && !line.trimmed().startsWith("--") &&
                 (line.contains("OBJECT-IDENTITY", Qt::CaseInsensitive) ||
                  line.contains("OBJECT-TYPE", Qt::CaseInsensitive) ||
                  line.contains("OBJECT IDENTIFIER", Qt::CaseInsensitive)))// Start of an object declaration
         {
             child = new QMibItem();
-            child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
+            child->setName(splitWhiteSpaces(line)[0]);
 //            qInfo() << "Node named found " << child->getName();
             child->setAsnBasicType(QMibItem::Leaf);
             nodeFound = true;
@@ -158,7 +178,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         else if(!nodeFound && line.contains("NOTIFICATION-TYPE", Qt::CaseInsensitive))// Start of an object declaration
         {
             child = new QMibItem();
-            child->setName(line.split(" ", QString::SkipEmptyParts)[0]);
+            child->setName(splitWhiteSpaces(line)[0]);
             child->setAsnBasicType(QMibItem::Trap);
             child->getItems()[0]->setCheckable(false);// We don't export traps
             nodeFound = true;
@@ -169,7 +189,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             if(!identityFound && !moduleIdentity->getName().isEmpty() && moduleIdentity->getOid().isEmpty())// We're founding the module identity data
             {
                 identityFound = true;
-                QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - line.indexOf("{") - 1).trimmed().split(" ");
+                QStringList lineData = line.mid(line.indexOf("{") + 1, line.indexOf("}") - line.indexOf("{") - 1).replace("\t", " ").trimmed().split(" ");
                 moduleIdentity->setOid(lineData[1]);
                 moduleIdentity->setIsLeaf(false);
                 moduleIdentityParentName = lineData[0];
@@ -221,11 +241,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 child->setAsnBasicType(QMibItem::Gauge);
                 if(line.contains("("))
                 {
-                    QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
-                    child->setMin(lineData[0].toInt());
-                    child->setMax(lineData[1].toInt());
-                    child->setWcsMin(lineData[0].toInt());
-                    child->setWcsMax(lineData[1].toInt());
+                    configureNumericChild(child, line);
                 }
             }
             else if(line.contains("Integer32", Qt::CaseInsensitive))
@@ -233,11 +249,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 child->setAsnBasicType(QMibItem::S32);
                 if(line.contains("("))
                 {
-                    QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
-                    child->setMin(lineData[0].toInt());
-                    child->setMax(lineData[1].toInt());
-                    child->setWcsMin(lineData[0].toInt());
-                    child->setWcsMax(lineData[1].toInt());
+                    configureNumericChild(child, line);
                 }
             }
             else if(line.contains("Unsigned32", Qt::CaseInsensitive))
@@ -245,11 +257,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 child->setAsnBasicType(QMibItem::U32);
                 if(line.contains("("))
                 {
-                    QStringList lineData = line.mid(line.indexOf("(") + 1, line.indexOf(")") - line.indexOf("(") - 1).trimmed().split("..");
-                    child->setMin(lineData[0].toInt());
-                    child->setMax(lineData[1].toInt());
-                    child->setWcsMin(lineData[0].toInt());
-                    child->setWcsMax(lineData[1].toInt());
+                    configureNumericChild(child, line);
                 }
             }
             else if(line.contains("Integer", Qt::CaseInsensitive))
@@ -261,12 +269,7 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
                 child->setAsnBasicType(QMibItem::OctetString);
                 if(line.contains("SIZE(", Qt::CaseInsensitive))
                 {
-                    QStringList lineData = line.mid(line.indexOf("SIZE(") + 1,
-                                                    line.indexOf("))") - line.indexOf("SIZE(") - 1).trimmed().split("..");
-                    child->setMin(lineData[0].toInt());
-                    child->setMax(lineData[1].toInt());
-                    child->setWcsMin(lineData[0].toInt());
-                    child->setWcsMax(lineData[1].toInt());
+                    configureNumericChild(child, line, "SIZE");
                 }
             }
             else if(line.contains("SEQUENCE OF", Qt::CaseInsensitive))
@@ -276,15 +279,15 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
         }
         else if(nodeFound && line.contains("MAX-ACCESS", Qt::CaseInsensitive))
         {
-            child->setIsReadOnly(line.trimmed().split(" ", QString::SkipEmptyParts)[1].compare("read-only", Qt::CaseInsensitive) == 0);
+            child->setIsReadOnly(splitWhiteSpaces(line)[1].compare("read-only", Qt::CaseInsensitive) == 0);
         }
         else if(nodeFound && line.contains("STATUS", Qt::CaseInsensitive))
         {
-            child->setIsCurrent(line.trimmed().split(" ", QString::SkipEmptyParts)[1].compare("obsolete", Qt::CaseInsensitive) != 0);
+            child->setIsCurrent(splitWhiteSpaces(line)[1].compare("obsolete", Qt::CaseInsensitive) != 0);
         }
         else if(nodeFound && line.contains("UNITS", Qt::CaseInsensitive))
         {
-            child->setUnit(line.trimmed().remove("\"").split(" ", QString::SkipEmptyParts)[1]);
+            child->setUnit(line.replace("\t", " ").trimmed().split(" ", QString::SkipEmptyParts)[1].remove("\""));
         }
         else if(nodeFound && line.contains("DESCRIPTION", Qt::CaseInsensitive))
         {
@@ -297,4 +300,40 @@ void QTreeMibModel::createModel(QTextStream *stream, QMibItem *parent) {
             endNodeReached = true;
         }
     }
+    // Case where the loaded MIB depends from another one and is not directly related to the "enterprises" node
+    if(parent == root)
+    {
+        return root->getChildren().size() > 0;
+    }
+    return true;
+}
+
+void QTreeMibModel::configureNumericChild(QMibItem *child, QString line, QString optionalPrefix)
+{
+    int szOffset = optionalPrefix.size() + 1;// + 1 for '('
+    QStringList lineData = line.mid(line.indexOf(optionalPrefix + "(") + szOffset, line.indexOf(")") - line.indexOf(optionalPrefix + "(") - szOffset).trimmed().split("..");
+    int minIdx, maxIdx;
+    if(lineData.size() == 1)
+    {
+        minIdx = 0;
+        maxIdx = 0;
+    }
+    else if(lineData.size() == 2)
+    {
+        minIdx = 0;
+        maxIdx = 1;
+    }
+    else
+    {
+        return;
+    }
+    child->setMin(lineData[minIdx].toInt());
+    child->setMax(lineData[maxIdx].toInt());
+    child->setWcsMin(lineData[minIdx].toInt());
+    child->setWcsMax(lineData[maxIdx].toInt());
+}
+
+QStringList QTreeMibModel::splitWhiteSpaces(QString line)
+{
+    return line.replace("\t", " ").trimmed().split(" ", QString::SkipEmptyParts);
 }
