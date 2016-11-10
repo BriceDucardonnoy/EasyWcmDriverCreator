@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>959</width>
-    <height>721</height>
+    <width>1144</width>
+    <height>898</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,6 +42,9 @@
         <height>0</height>
        </size>
       </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOn</enum>
+      </property>
      </widget>
     </item>
     <item>
@@ -71,9 +74,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-280</y>
          <width>443</width>
-         <height>1065</height>
+         <height>1170</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -100,16 +103,16 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="driverVersionLabel">
+           <widget class="QLabel" name="versionTypeLabel">
             <property name="text">
-             <string>Version du driver</string>
+             <string>Type du driver</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="driverVersionLineEdit">
             <property name="text">
-             <string>1.0</string>
+             <string>3.0</string>
             </property>
            </widget>
           </item>
@@ -233,12 +236,22 @@
           <item row="7" column="0">
            <widget class="QLabel" name="flagLabel">
             <property name="text">
-             <string>Flag</string>
+             <string>Produit WCS</string>
             </property>
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QSpinBox" name="flagSpinBox"/>
+           <widget class="QCheckBox" name="flagCheckBox"/>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="driverVersionLabel">
+            <property name="text">
+             <string>driverVersion</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QSpinBox" name="driverVersionSpinBox"/>
           </item>
          </layout>
         </item>
@@ -257,7 +270,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="versionLabel">
             <property name="text">
-             <string>Version</string>
+             <string>Version du produit</string>
             </property>
            </widget>
           </item>
@@ -278,7 +291,7 @@
           <item row="1" column="1">
            <widget class="QComboBox" name="protocolComboBox">
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <item>
              <property name="text">
@@ -415,36 +428,6 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="minLabel">
-            <property name="text">
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QSpinBox" name="minSpinBox"/>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="maxLabel">
-            <property name="text">
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="1">
-           <widget class="QSpinBox" name="maxSpinBox"/>
-          </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="unitLabel">
-            <property name="text">
-             <string>Unité</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1">
-           <widget class="QLineEdit" name="unitLineEdit"/>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="frLabel">
             <property name="text">
@@ -475,6 +458,20 @@
           <item row="6" column="1">
            <widget class="QLineEdit" name="esLineEdit"/>
           </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="refreshFactorLabel">
+            <property name="text">
+             <string>Facteur de rafraîchissement</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QSpinBox" name="refreshFactorLineEdit">
+            <property name="value">
+             <number>4</number>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -485,7 +482,7 @@
           <property name="minimumSize">
            <size>
             <width>50</width>
-            <height>100</height>
+            <height>160</height>
            </size>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -607,6 +604,35 @@
                </property>
               </widget>
              </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="severityLabel">
+               <property name="text">
+                <string>severity</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="severityComboBox">
+               <property name="currentIndex">
+                <number>2</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>10: Low</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>20: Medium</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>30: High</string>
+                </property>
+               </item>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -623,38 +649,24 @@
            </property>
            <item>
             <layout class="QFormLayout" name="identifierReadingForm">
-             <item row="2" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="factorLabel">
                <property name="text">
                 <string>Facteur</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="precisionLabel">
                <property name="text">
                 <string>Précision</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="6" column="1">
               <widget class="QSpinBox" name="precisionLineEdit"/>
              </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="refreshFactorLabel">
-               <property name="text">
-                <string>Facteur de raffraîchissement</string>
-               </property>
-              </widget>
-             </item>
              <item row="5" column="1">
-              <widget class="QSpinBox" name="refreshFactorLineEdit">
-               <property name="value">
-                <number>4</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
               <widget class="QDoubleSpinBox" name="factorLineEdit">
                <property name="decimals">
                 <number>8</number>
@@ -666,6 +678,36 @@
                 <double>100.000000000000000</double>
                </property>
               </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="minLabel">
+               <property name="text">
+                <string>Min</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QSpinBox" name="minSpinBox"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="maxLabel">
+               <property name="text">
+                <string>Max</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QSpinBox" name="maxSpinBox"/>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="unitLabel">
+               <property name="text">
+                <string>Unité</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="unitLineEdit"/>
              </item>
             </layout>
            </item>
@@ -696,7 +738,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>959</width>
+     <width>1144</width>
      <height>25</height>
     </rect>
    </property>
@@ -759,15 +801,11 @@
   <tabstop>inMIBCheckBox</tabstop>
   <tabstop>nameLineEdit</tabstop>
   <tabstop>oidLineEdit</tabstop>
-  <tabstop>minSpinBox</tabstop>
-  <tabstop>maxSpinBox</tabstop>
-  <tabstop>unitLineEdit</tabstop>
   <tabstop>typeComboBox</tabstop>
   <tabstop>operatorComboBox</tabstop>
   <tabstop>expectedValueLineEdit</tabstop>
   <tabstop>factorLineEdit</tabstop>
   <tabstop>precisionLineEdit</tabstop>
-  <tabstop>refreshFactorLineEdit</tabstop>
   <tabstop>mibTreeView</tabstop>
  </tabstops>
  <resources>

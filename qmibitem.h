@@ -108,10 +108,13 @@ public:
     /* JSON method(s) */
     QJsonObject write(const QString mibName, QJsonObject &fr, QJsonObject &en, QJsonObject &es) const;
 
+    int getSeverity() const;
+    void setSeverity(int value);
+
 protected:
     void updateStateAscending();
 
-     /* JSON method(s) */
+    /* JSON method(s) */
     void writeId(QJsonObject &) const;
     void writeIdReading(QJsonObject &) const;
 
@@ -139,6 +142,7 @@ private:
     QString expectedValue;
     QString fr, en, es;
     int wcsMin, wcsMax;
+    int severity;// 10 = Low, 20 = Medium, 30 = High
     QList<QStandardItem *> rowItems;
     QList<QMibItem*> children;
     QMibItem* parent;

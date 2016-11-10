@@ -1,5 +1,5 @@
 #include <qdebug.h>
-#include <qicon.h>
+#include <QIcon>
 
 #include "qmibitem.h"
 
@@ -20,7 +20,7 @@ QMibItem::~QMibItem()
 
 QMibItem::QMibItem(QString name, QString oid)
     : name(name), isLeaf(true), oid(oid), isReadOnly(true), min(0), max(0), unit(""), attribute("Misc"), refreshFactor(4), factor(1), precision(1), identifierType(0),
-      strOperator(0), wcsType(QMibItem::Unset), mib(""), expectedValue(""), fr(""), en(""), es(""), parent(NULL)
+      strOperator(0), wcsType(QMibItem::Unset), mib(""), expectedValue(""), fr(""), en(""), es(""), wcsMin(0), wcsMax(0), severity(30), parent(NULL)
 {
     rowItems << new QStandardItem(name);
     rowItems << new QStandardItem(oid);
@@ -57,21 +57,21 @@ const QList<QStandardItem *> QMibItem::createOrUpdateItems()
                 icon.addFile(":/icons/trap");
                 break;
             case Gauge:
-                icon.addFile(":/icons/gauge");
+                icon.addFile(isReadOnly ? ":/icons/gauge" : ":/icons/gaugeRW");
                 setWcsType(QMibItem::IdentifierReading);
                 break;
             case U32:
             case S32:
             case EnumInt:
-                icon.addFile(":/icons/enum");
+                icon.addFile(isReadOnly ? ":/icons/enum" : ":/icons/enumRW");
                 setWcsType(QMibItem::Identifier);
                 break;
             case OctetString:
-                icon.addFile(":/icons/text");
+                icon.addFile(isReadOnly ? ":/icons/text" : ":/icons/textRW");
                 setWcsType(QMibItem::Identifier);
                 break;
             default:
-                icon.addFile(":/icons/leaf");
+                icon.addFile(isReadOnly ? ":/icons/leaf" : ":/icons/leafRW");
                 setWcsType(QMibItem::Identifier);
             }
         }
@@ -156,6 +156,7 @@ QJsonObject QMibItem::write(const QString mibName, QJsonObject &fr, QJsonObject 
     me["mib"] = mibName;
     me["name"] = name;
     me["identifier"] = oid;
+    me["refreshFactor"] = refreshFactor;
 
     fr[name] = this->fr;
     en[name] = this->en;
@@ -178,6 +179,7 @@ void QMibItem::writeId(QJsonObject &json) const
     json["type"] = identifierType;
     json["operator"] = strOperator;
     json["expectedValue"] = expectedValue;
+    json["severity"] = severity;
 }
 
 void QMibItem::writeIdReading(QJsonObject &json) const
@@ -187,7 +189,17 @@ void QMibItem::writeIdReading(QJsonObject &json) const
     json["factor"] = factor;
     json["precision"] = precision;
     json["unit"] = unit;
-    json["refreshFactor"] = refreshFactor;
+    json["measureName"] = name;
+}
+
+int QMibItem::getSeverity() const
+{
+    return severity;
+}
+
+void QMibItem::setSeverity(int value)
+{
+    severity = value;
 }
 
 int QMibItem::getWcsMax() const

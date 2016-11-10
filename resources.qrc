@@ -10,5 +10,9 @@
         <file alias="text">icons/text.png</file>
         <file alias="table">icons/table.png</file>
         <file alias="icon">icons/EasyWCMDriver.png</file>
+        <file alias="enumRW">icons/enumRW.png</file>
+        <file alias="leafRW">icons/leafRW.png</file>
+        <file alias="textRW">icons/textRW.png</file>
+        <file alias="gaugeRW">icons/gaugeRW.png</file>
     </qresource>
 </RCC>

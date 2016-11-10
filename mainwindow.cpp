@@ -13,8 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //    connect(ui->action_Charger_une_MIB,SIGNAL(triggered(bool)),this,SLOT(on_action_Charger_une_MIB_triggered()));
     ui->centralWidget->addActions(ui->menu_Menu->actions());
+    // Widget hide
     ui->identifierReadingWidgets->hide();
     ui->identifierWidgets->hide();
+    ui->cheminDuSVGLabel->hide();
+    ui->svgLineEdit->hide();
+    ui->dansLaMIBLabel->hide();
+    ui->inMIBCheckBox->hide();
     // Tested MIBs
 //    loadMib("/home/bdy/Téléchargements/ECRESO-FM-TRANS-MIB.mib");
 //    loadMib("/home/bdy/WorldcastSystems/WorldCastManager/drivers/DB6400-MIB.mib");
@@ -114,6 +119,8 @@ void MainWindow::clearRightPane()
     ui->precisionLineEdit->clear();
     // Refresh rate
     ui->refreshFactorLineEdit->clear();
+    // Severity
+    ui->severityComboBox->setCurrentIndex(0);
 }
 
 void MainWindow::populateRightPane(QMibItem *node)
@@ -168,6 +175,8 @@ void MainWindow::populateRightPane(QMibItem *node)
     ui->precisionLineEdit->setValue(node->getPrecision());
     // Refresh rate
     ui->refreshFactorLineEdit->setValue(node->getRefreshFactor());
+    // Severity
+    ui->severityComboBox->setCurrentIndex((node->getSeverity() / 10) - 1);// How to avoid a switch/case...
 }
 
 void MainWindow::saveNodeUpdates(QMibItem *node)
@@ -206,6 +215,8 @@ void MainWindow::saveNodeUpdates(QMibItem *node)
     node->setPrecision(ui->precisionLineEdit->value());
     // Refresh rate
     node->setRefreshFactor(ui->refreshFactorLineEdit->value());
+    // Severity
+    node->setSeverity((ui->severityComboBox->currentIndex() + 1) * 10);
 }
 
 void MainWindow::on_measureCheckBox_stateChanged(int arg1)
@@ -283,7 +294,8 @@ void MainWindow::on_action_Sauver_le_Driver_triggered()
     product["systemName"] = ui->systemNameLineEdit->text();
     product["systemType"] = ui->systemTypeLineEdit->text();
     product["driver"] = driver;
-    product["flag"] = ui->flagSpinBox->value();
+    product["version"] = ui->driverVersionSpinBox->value();
+    product["flag"] = ui->flagCheckBox->checkState() == Qt::Checked ? 1 : 0;
     productArray.append(product);
     productFamily["product"] = productArray;
     productFamily["svgPath"] = ui->svgLineEdit->text();
