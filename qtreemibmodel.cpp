@@ -91,6 +91,11 @@ void QTreeMibModel::checkItemStates(QStandardItem *item)
     }
 }
 
+QMibItem *QTreeMibModel::getRoot() const
+{
+    return root;
+}
+
 QString QTreeMibModel::getVendor() const
 {
     return vendor;

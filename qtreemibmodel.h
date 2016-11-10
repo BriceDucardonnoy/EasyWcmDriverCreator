@@ -33,6 +33,8 @@ public:
 
     QList<QMibItem *> getCheckedItem(void);
 
+    QMibItem *getRoot() const;
+
 protected:
     /**
      * @brief TreeMibModel::createModel Recursive method to create the tree model

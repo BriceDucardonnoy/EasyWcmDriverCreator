@@ -22,6 +22,8 @@ public:
     void clearRightPane();
     void populateRightPane(QMibItem *node);
     void saveNodeUpdates(QMibItem *node);
+protected:
+    void closeEvent(QCloseEvent *event);
 private slots:
     void on_action_Charger_une_MIB_triggered();
     void selectedLineChanged(QItemSelection, QItemSelection);

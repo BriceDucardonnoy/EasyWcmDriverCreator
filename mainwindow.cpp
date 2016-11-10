@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QMessageBox>
+#include <QCloseEvent>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,6 +36,29 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QMessageBox::StandardButton exitDialog/*, oidUpdateDialog*/;
+    exitDialog = QMessageBox::warning(this, tr("Confirmation de fermeture"),
+                                  tr("Êtes-vous sûr(e) de vouloir quitter l'application ?"),
+                                  QMessageBox::Ok | QMessageBox::Cancel);
+
+//    oidUpdateDialog = QMessageBox::information(this, tr("Mise à jour des OIDs"),
+//                                               tr("Une partie des identifiants est inconnue (les OIDs contiennent '???'), voulez-vous les remplacer par une séquence ?"),
+//                                               QMessageBox::Yes | QMessageBox::No);
+    // Ask for confirmation as ain't no way to save configuration (only export)
+    if(exitDialog == QMessageBox::Ok)
+    {
+        // Check if the OIDs contains '???' and offer the possibility to replace them
+//        if(model->getRoot()->getOid().contains("???")) { }
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 void MainWindow::loadMib(QString mibPath)
